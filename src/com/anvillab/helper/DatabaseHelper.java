@@ -15,7 +15,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 //HAVE TO INSERT THE DATETIME UPDATE IN EVERY OPERATION
 //SELECT QUERY FOR RESTURANT AND MENU AND SEARCH
-//USER TABLE
 //WHAT HAPPENS TO THE RATING TABLES ON DELETING MENU OR RESTAURANT?
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -127,11 +126,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
+		database.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RESTAURANT);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RESTAURANT_MENU);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_RESTAURANT);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_ITEM);
+	}
+	
+	public void createUser(String credential,long id)
+	{
+		SQLiteDatabase db=this.getWritableDatabase();
+		
+		ContentValues values=new ContentValues();
+		
+		values.put(KEY_ID,id);
+		values.put(KEY_CREDENTIAL,credential);
+		
+		db.insert(TABLE_USER, null, values);
+	}
+	
+	public void deleteUser(long id)
+	{
+		SQLiteDatabase db=this.getWritableDatabase();
+		db.delete(TABLE_USER, KEY_ID + " = ?",
+	            new String[] { String.valueOf(id) });
 	}
 	
 	public long createRestaurant(Restaurant restaurant)
