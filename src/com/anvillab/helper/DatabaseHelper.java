@@ -14,8 +14,8 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 //HAVE TO INSERT THE DATETIME UPDATE IN EVERY OPERATION
-//SELECT QUERY FOR RESTURANT AND MENU
-//DELETE RESTAURANT FUNCTION
+//SELECT QUERY FOR RESTURANT AND MENU AND SEARCH
+//USER TABLE
 //WHAT HAPPENS TO THE RATING TABLES ON DELETING MENU OR RESTAURANT?
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
  
     // Database Name
-    private static final String DATABASE_NAME = "FodDatabase";
+    private static final String DATABASE_NAME = "FoodDatabase";
     
     //Common column names
     private static final String KEY_ID = "id";
@@ -40,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_LAST_UPDATED = "updatedAt";
         
     //Table names
+    private static final String TABLE_USER = "Users";
     private static final String TABLE_RESTAURANT = "Restaurants";
     private static final String TABLE_MENU = "MenuItems";
     private static final String TABLE_RESTAURANT_MENU = "Restaurant_Menus"; 
@@ -67,6 +68,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_PACKAGE = "package";
     private static final String KEY_AVAILABLE_TIME = "availableTime";
     private static final String KEY_PRICE = "price";
+    
+    private static final String CREATE_TABLE_USER = "CREATE TABLE "
+            + TABLE_USER + "(" + KEY_ID + " INTEGER PRIMARY KEY NOT NULL," + KEY_CREDENTIAL + " TEXT" + ")";
 
     //id is populated from server
     private static final String CREATE_TABLE_RESTAURANT = "CREATE TABLE "
@@ -112,6 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase database) {
 		// TODO Auto-generated method stub
+		database.execSQL(CREATE_TABLE_USER);
 		database.execSQL(CREATE_TABLE_RESTAURANT);
 		database.execSQL(CREATE_TABLE_MENU);
 		database.execSQL(CREATE_TABLE_RESTAURANT_MENU);
@@ -179,6 +184,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 	}
 	
+	
+	
 	public ArrayList<MenuItem> getMenuByRestaurant(long restaurantId)
 	{
 		ArrayList<MenuItem> Menus=new ArrayList<MenuItem>();
@@ -213,6 +220,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		 
 		 return Menus;
 	
+	}
+	
+	public void deleteRestaurant(long restaurantId)
+	{
+		ArrayList<MenuItem> Menus =  getMenuByRestaurant(restaurantId);
+		
+		for(int i=0;i<Menus.size();i++)
+			deleteMenu(Menus.get(i).getId());
+		
+		deleteReviewByRestaurant(restaurantId);
+		
+		SQLiteDatabase db=this.getWritableDatabase();
+		
+		db.delete(TABLE_RESTAURANT, KEY_ID + " = ?",
+	            new String[] { String.valueOf(restaurantId) });
 	}
 		
 		
@@ -260,6 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	{
 		SQLiteDatabase db=this.getWritableDatabase();
 		deleteRelationByMenu(menuId);
+		deleteReviewByItem(menuId);
 		db.delete(TABLE_MENU, KEY_ID + " = ?",
 		            new String[] { String.valueOf(menuId) });
 	}
@@ -347,6 +370,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    
 	}
 	
+	public void deleteReviewByRestaurant(long restaurantId)
+	{
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_RATE_RESTAURANT, KEY_RESTAURANT_ID + " = ?",
+		            new String[] { String.valueOf(restaurantId) });
+		
+	}
+	
+	public void deleteReviewByItem(long itemId)
+	{
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_RATE_ITEM, KEY_MENU_ID + " = ?",
+		            new String[] { String.valueOf(itemId) });
+	}
 
 }
 
