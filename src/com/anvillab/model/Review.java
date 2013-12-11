@@ -3,7 +3,7 @@ package com.anvillab.model;
 public class Review {
 	
 	public float Rating;
-	public String Credential;
+	public long UserId;
 	public String Review;
 	
 	public Review(float rating, String review) {
@@ -12,12 +12,12 @@ public class Review {
 		Review = review;
 	}
 	
-	public String getCredential() {
-		return Credential;
+	public long getUserId() {
+		return UserId;
 	}
 
-	public void setCredential(String credential) {
-		Credential = credential;
+	public void setUserId(long userId) {
+		UserId = userId;
 	}
 
 	public float getRating() {

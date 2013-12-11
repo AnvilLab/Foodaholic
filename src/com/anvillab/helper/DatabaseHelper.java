@@ -13,9 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
-//HAVE TO INSERT THE DATETIME UPDATE IN EVERY OPERATION
-//SELECT QUERY FOR RESTURANT AND MENU AND SEARCH
-//WHAT HAPPENS TO THE RATING TABLES ON DELETING MENU OR RESTAURANT?
+//ADD CREATE AND DELETE USER
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
@@ -36,7 +34,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_REVIEW= "review";
     private static final String KEY_NAME = "name";
     private static final String KEY_TOTAL_VOTE = "totalVote";
-    private static final String KEY_LAST_UPDATED = "updatedAt";
         
     //Table names
     private static final String TABLE_USER = "Users";
@@ -47,7 +44,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_RATE_ITEM = "Rate_Menu";	
     
     //User column names
+    private static final String KEY_USER_ID= "userId";
     private static final String KEY_CREDENTIAL= "credential";
+    private static final String KEY_FACEBOOK_ID= "facebookId";
+    private static final String KEY_LAST_UPDATED= "lastUpdated";
+    private static final String KEY_LAST_UPDATED_ID= "lastUpdatedId";
      
     //Restaurant column names
     private static final String KEY_ADDRESS = "address";
@@ -63,13 +64,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     
     //Menu column names
     private static final String KEY_CATEGORY  = "category";
+    private static final String KEY_TAG  = "tags";
     private static final String KEY_SUB_CATEGORY = "subCategory";
     private static final String KEY_PACKAGE = "package";
     private static final String KEY_AVAILABLE_TIME = "availableTime";
     private static final String KEY_PRICE = "price";
     
     private static final String CREATE_TABLE_USER = "CREATE TABLE "
-            + TABLE_USER + "(" + KEY_ID + " INTEGER PRIMARY KEY NOT NULL," + KEY_CREDENTIAL + " TEXT" + ")";
+            + TABLE_USER + "(" + KEY_ID + " INTEGER PRIMARY KEY NOT NULL," + KEY_LAST_UPDATED + " DATETIME," 
+    		+ KEY_LAST_UPDATED_ID + " INTEGER,"+ KEY_FACEBOOK_ID + " TEXT," + KEY_CREDENTIAL + " TEXT" + ")";
 
     //id is populated from server
     private static final String CREATE_TABLE_RESTAURANT = "CREATE TABLE "
@@ -82,20 +85,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   //id is populated from server
    private static final String CREATE_TABLE_MENU = "CREATE TABLE "
            + TABLE_MENU + "(" + KEY_ID + " INTEGER PRIMARY KEY NOT NULL," + KEY_NAME + " TEXT," 
-   		   + KEY_CATEGORY  + " TEXT," + KEY_LAST_UPDATED + " DATETIME," + KEY_SUB_CATEGORY + " TEXT," + KEY_PACKAGE + " TEXT," + KEY_AVAILABLE_TIME + " TEXT,"
+   		   + KEY_CATEGORY  + " TEXT,"  + KEY_SUB_CATEGORY + " TEXT," + KEY_TAG + " TEXT," + KEY_PACKAGE + " TEXT," + KEY_AVAILABLE_TIME + " TEXT,"
    		   + KEY_PRICE + " REAL," +  KEY_TOTAL_VOTE + " INTEGER," + KEY_RATING + " REAL" + ")";
-   
-   
    
    //user and restaurant joint primary key
    private static final String CREATE_TABLE_RATE_RESTAURANT = "CREATE TABLE "
-           + TABLE_RATE_RESTAURANT  + "(" + KEY_CREDENTIAL + " TEXT,"  + KEY_RESTAURANT_ID + " INTEGER," 
-   		   + KEY_RATING + " REAL," + KEY_LAST_UPDATED + " DATETIME," + KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_RESTAURANT_ID + ", " + KEY_CREDENTIAL + "))";
+           + TABLE_RATE_RESTAURANT  + "(" + KEY_USER_ID + " INTEGER,"  + KEY_RESTAURANT_ID + " INTEGER," 
+   		   + KEY_RATING + " REAL," +  KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_RESTAURANT_ID + ", " + KEY_CREDENTIAL + "))";
    
    //user and menu joint primary key
    private static final String CREATE_TABLE_RATE_ITEM = "CREATE TABLE "
-           + TABLE_RATE_ITEM + "(" + KEY_CREDENTIAL + " TEXT," + KEY_MENU_ID + " INTEGER," 
-           + KEY_RATING + " REAL," + KEY_LAST_UPDATED + " DATETIME," + KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_MENU_ID + ", " + KEY_CREDENTIAL + "))";
+           + TABLE_RATE_ITEM + "(" + KEY_USER_ID + " INTEGER," + KEY_MENU_ID + " INTEGER," 
+           + KEY_RATING + " REAL," + KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_MENU_ID + ", " + KEY_CREDENTIAL + "))";
    
    //item id primary key? following tutorial for now
    private static final String CREATE_TABLE_RESTAURANT_MENU = "CREATE TABLE "
@@ -134,24 +135,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_ITEM);
 	}
 	
-	public void createUser(String credential,long id)
-	{
-		SQLiteDatabase db=this.getWritableDatabase();
-		
-		ContentValues values=new ContentValues();
-		
-		values.put(KEY_ID,id);
-		values.put(KEY_CREDENTIAL,credential);
-		
-		db.insert(TABLE_USER, null, values);
-	}
 	
-	public void deleteUser(long id)
-	{
-		SQLiteDatabase db=this.getWritableDatabase();
-		db.delete(TABLE_USER, KEY_ID + " = ?",
-	            new String[] { String.valueOf(id) });
-	}
 	
 	public long createRestaurant(Restaurant restaurant)
 	{
@@ -224,6 +208,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		         
 		            menu.setId((cursor.getLong(cursor.getColumnIndex(KEY_ID))));
 		            menu.setName((cursor.getString(cursor.getColumnIndex(KEY_NAME))));
+		            menu.setTags((cursor.getString(cursor.getColumnIndex(KEY_TAG))));
 		            menu.setPackage((cursor.getString(cursor.getColumnIndex(KEY_PACKAGE))));
 		            menu.setCategory((cursor.getString(cursor.getColumnIndex(KEY_CATEGORY))));
 		            menu.setSubCatergory((cursor.getString(cursor.getColumnIndex(KEY_SUB_CATEGORY))));
@@ -265,6 +250,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		values.put(KEY_NAME,menu.getName());
 		values.put(KEY_CATEGORY,menu.getCategory());
+		values.put(KEY_TAG,menu.getTags());
 		values.put(KEY_SUB_CATEGORY,menu.getSubCatergory());
 		values.put(KEY_PACKAGE, menu.getPackage());
 		values.put(KEY_AVAILABLE_TIME, menu.getAvailableTime());
@@ -288,6 +274,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		values.put(KEY_CATEGORY,menu.getCategory());
 		values.put(KEY_SUB_CATEGORY,menu.getSubCatergory());
 		values.put(KEY_PACKAGE, menu.getPackage());
+		values.put(KEY_TAG,menu.getTags());
 		values.put(KEY_AVAILABLE_TIME, menu.getAvailableTime());
 		values.put(KEY_PRICE,menu.getPrice());
 		values.put(KEY_RATING, menu.getRating());
@@ -335,7 +322,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    values.put(KEY_RATING, 	review.getRating());
 	    values.put(KEY_REVIEW, review.getReview());
 	    values.put(KEY_RESTAURANT_ID,restaurantId);
-	    values.put(KEY_CREDENTIAL, review.getCredential());
+	    values.put(KEY_USER_ID, review.getUserId());
 	    
 	    db.insert(TABLE_RATE_RESTAURANT, null, values);
 	    
@@ -348,12 +335,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    ContentValues values = new ContentValues();
 	    values.put(KEY_RATING, 	review.getRating());
 	    values.put(KEY_RESTAURANT_ID,restaurantId);
-	    values.put(KEY_CREDENTIAL, review.getCredential());
+	    values.put(KEY_USER_ID, review.getUserId());
 	    
 	    if(review.getReview()!="") values.put(KEY_REVIEW,review.getReview());
 	    
 	    return db.update(TABLE_RATE_RESTAURANT, values, KEY_RESTAURANT_ID + " = ?" + " AND " + KEY_CREDENTIAL + " = ?",
-	            new String[] { String.valueOf(restaurantId),review.getCredential()});
+	            new String[] { String.valueOf(restaurantId),String.valueOf(review.getUserId())});
 	    
 	}
 	
@@ -366,7 +353,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    values.put(KEY_RATING, 	review.getRating());
 	    values.put(KEY_REVIEW, review.getReview());
 	    values.put(KEY_MENU_ID,itemId);
-	    values.put(KEY_CREDENTIAL, review.getCredential());
+	    values.put(KEY_USER_ID, review.getUserId());
 	
 	    
 	    db.insert(TABLE_RATE_ITEM, null, values);
@@ -380,12 +367,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    ContentValues values = new ContentValues();
 	    values.put(KEY_RATING, 	review.getRating());
 	    values.put(KEY_MENU_ID,itemId);
-	    values.put(KEY_CREDENTIAL, review.getCredential());
+	    values.put(KEY_USER_ID, review.getUserId());
 	    
 	    if(review.getReview()!="") values.put(KEY_REVIEW,review.getReview());
 	    
-	    db.update(TABLE_RATE_ITEM, values, KEY_MENU_ID + " = ?" + " AND " + KEY_CREDENTIAL + " = ?",
-	            new String[] { String.valueOf(itemId),review.getCredential()});
+	    db.update(TABLE_RATE_ITEM, values, KEY_MENU_ID + " = ?" + " AND " + KEY_USER_ID + " = ?",
+	            new String[] { String.valueOf(itemId),String.valueOf(review.getUserId())});
 	    
 	}
 	
