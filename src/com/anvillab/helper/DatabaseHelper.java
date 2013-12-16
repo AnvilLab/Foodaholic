@@ -39,7 +39,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_USER = "Users";
     private static final String TABLE_RESTAURANT = "Restaurants";
     private static final String TABLE_MENU = "MenuItems";
-    private static final String TABLE_RESTAURANT_MENU = "Restaurant_Menus"; 
     private static final String TABLE_RATE_RESTAURANT = "Rate_Restaurant";	
     private static final String TABLE_RATE_ITEM = "Rate_Menu";	
     
@@ -84,7 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
    
   //id is populated from server
    private static final String CREATE_TABLE_MENU = "CREATE TABLE "
-           + TABLE_MENU + "(" + KEY_ID + " INTEGER PRIMARY KEY NOT NULL," + KEY_NAME + " TEXT," 
+           + TABLE_MENU + "(" + KEY_ID + " INTEGER PRIMARY KEY NOT NULL," + KEY_RESTAURANT_ID + " INTEGER," + KEY_NAME + " TEXT," 
    		   + KEY_CATEGORY  + " TEXT,"  + KEY_SUB_CATEGORY + " TEXT," + KEY_TAG + " TEXT," + KEY_PACKAGE + " TEXT," + KEY_AVAILABLE_TIME + " TEXT,"
    		   + KEY_PRICE + " REAL," +  KEY_TOTAL_VOTE + " INTEGER," + KEY_RATING + " REAL" + ")";
    
@@ -98,10 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
            + TABLE_RATE_ITEM + "(" + KEY_USER_ID + " INTEGER," + KEY_MENU_ID + " INTEGER," 
            + KEY_RATING + " REAL," + KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_MENU_ID + ", " + KEY_CREDENTIAL + "))";
    
-   //item id primary key? following tutorial for now
-   private static final String CREATE_TABLE_RESTAURANT_MENU = "CREATE TABLE "
-           + TABLE_RESTAURANT_MENU + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + KEY_RESTAURANT_ID + " INTEGER," 
-   		   + KEY_MENU_ID + " INTEGER UNIQUE" + ")";
+   
 
 	public DatabaseHelper(Context context, String name, CursorFactory factory,
 			int version) {
@@ -119,7 +115,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		database.execSQL(CREATE_TABLE_USER);
 		database.execSQL(CREATE_TABLE_RESTAURANT);
 		database.execSQL(CREATE_TABLE_MENU);
-		database.execSQL(CREATE_TABLE_RESTAURANT_MENU);
 		database.execSQL(CREATE_TABLE_RATE_RESTAURANT);
 		database.execSQL(CREATE_TABLE_RATE_ITEM);
 	}
@@ -130,7 +125,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		database.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RESTAURANT);
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_RESTAURANT_MENU);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_RESTAURANT);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_ITEM);
 	}
@@ -188,16 +182,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	
-	
 	public ArrayList<MenuItem> getMenuByRestaurant(long restaurantId)
 	{
 		ArrayList<MenuItem> Menus=new ArrayList<MenuItem>();
 		
-		String selectQuery = "SELECT  * FROM " + TABLE_MENU + " tm, "
-	            + TABLE_RESTAURANT + " tr, " + TABLE_RESTAURANT_MENU + " trm WHERE tr."
-	            + KEY_ID + " = '" + restaurantId + "'" + " AND tr." + KEY_ID
-	            + " = " + "trm." + KEY_RESTAURANT_ID + " AND tm." + KEY_ID + " = "
-	            + "trm." + KEY_MENU_ID;
+		String selectQuery = "SELECT  * FROM " + TABLE_MENU + " WHERE "
+	            + KEY_RESTAURANT_ID + " = '" + restaurantId;
 		
 		 SQLiteDatabase db = this.getReadableDatabase();
 		 Cursor cursor = db.rawQuery(selectQuery, null);
@@ -233,8 +223,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		for(int i=0;i<Menus.size();i++)
 			deleteMenu(Menus.get(i).getId());
 		
-		deleteReviewByRestaurant(restaurantId);
-		
 		SQLiteDatabase db=this.getWritableDatabase();
 		
 		db.delete(TABLE_RESTAURANT, KEY_ID + " = ?",
@@ -257,8 +245,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		values.put(KEY_PRICE,menu.getPrice());
 		values.put(KEY_RATING, menu.getRating());
 		values.put(KEY_TOTAL_VOTE,menu.getTotalVote());
+		values.put(KEY_RESTAURANT_ID,menu.getRestaurantId());
 		
-		createRestaurantMenu(menu.getRestaurantId(),menu.getId());
 		
 		long id= db.insert(TABLE_MENU, null, values);
 		return id;
@@ -279,6 +267,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		values.put(KEY_PRICE,menu.getPrice());
 		values.put(KEY_RATING, menu.getRating());
 		values.put(KEY_TOTAL_VOTE,menu.getTotalVote());
+		values.put(KEY_RESTAURANT_ID,menu.getRestaurantId());
 		
 		return db.update(TABLE_MENU, values, KEY_ID + " = ?",
 	            new String[] { String.valueOf(menu.getId()) });
@@ -287,33 +276,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void deleteMenu(long menuId)
 	{
 		SQLiteDatabase db=this.getWritableDatabase();
-		deleteRelationByMenu(menuId);
-		deleteReviewByItem(menuId);
 		db.delete(TABLE_MENU, KEY_ID + " = ?",
 		            new String[] { String.valueOf(menuId) });
 	}
 	
 		
-	public void createRestaurantMenu(long restaurantId,long menuId)
-	{
-		SQLiteDatabase db = this.getWritableDatabase();
-		 
-	    ContentValues values = new ContentValues();
-	    values.put(KEY_MENU_ID, menuId);
-	    values.put(KEY_RESTAURANT_ID,restaurantId);
-	    
-	    db.insert(TABLE_RESTAURANT_MENU, null, values);
-	}
 	
-	public void deleteRelationByMenu(long menuId)
-	{
-		SQLiteDatabase db = this.getWritableDatabase();
 		
-		 db.delete(TABLE_RESTAURANT_MENU, KEY_MENU_ID + " = ?",
-		            new String[] { String.valueOf(menuId) });
-	}
-	
-	
 	public void rateRestaurant(Review review, long restaurantId)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -376,20 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    
 	}
 	
-	public void deleteReviewByRestaurant(long restaurantId)
-	{
-		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(TABLE_RATE_RESTAURANT, KEY_RESTAURANT_ID + " = ?",
-		            new String[] { String.valueOf(restaurantId) });
-		
-	}
 	
-	public void deleteReviewByItem(long itemId)
-	{
-		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(TABLE_RATE_ITEM, KEY_MENU_ID + " = ?",
-		            new String[] { String.valueOf(itemId) });
-	}
 
 }
 
