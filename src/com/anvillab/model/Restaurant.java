@@ -2,7 +2,31 @@ package com.anvillab.model;
 
 public class Restaurant {
 	
-	// Constructor for populating DB
+	public long Id;	
+	public boolean HasSmokingZone;
+	public boolean HasAC;
+	public boolean HasWIFI;
+	public boolean HasParking;
+	public String Name;
+	public String Address;
+	public String Location;
+	public String ContactNo;	
+	public String OpenDuration;
+	public String Holiday;
+	public String SpecialFeatures;
+	public String PrimeType;
+	public String Standard;
+	public String ActiveStatus;
+	public int SeatCapacity;
+	public Double Rating;
+	public long TotalVote;
+	public float PersonalRating;
+	
+	public Restaurant()
+	{
+		
+	}
+	
 	public Restaurant( String name, String address, String location,
 			String contactNo, String openDuration, String holiday,
 			String specialFeatures, String primeType, String standard,
@@ -23,37 +47,7 @@ public class Restaurant {
 		TotalVote=totalVote;
 	}
 	
-	//Constructor for sqlite test
-	public Restaurant(long id, String name, String address, String location,
-			String contactNo, String openDuration, String holiday,
-			String specialFeatures, String primeType, String standard,
-			String activeStatus, int seatCapacity, Double rating,long totalVote) {
-		super();
-		this.id=id;
-		Name = name;
-		Address = address;
-		Location = location;
-		ContactNo = contactNo;
-		OpenDuration = openDuration;
-		Holiday = holiday;
-		SpecialFeatures = specialFeatures;
-		PrimeType = primeType;
-		Standard = standard;
-		ActiveStatus = activeStatus;
-		SeatCapacity = seatCapacity;
-		Rating = rating;
-		TotalVote=totalVote;
-	}
-	
-	
-	//blank constructor
-	public Restaurant()
-	{
 		
-	}
-	
-	//constructor for UI
-	
 	public float getPersonalRating() {
 		return PersonalRating;
 	}
@@ -135,10 +129,10 @@ public class Restaurant {
 	}
 	
 	public long getId() {
-		return id;
+		return Id;
 	}
 	public void setId(long id) {
-		this.id = id;
+		Id = id;
 	}
 	
 	public long getTotalVote() {
@@ -180,28 +174,6 @@ public class Restaurant {
 	public void setHasParking(boolean hasParking) {
 		HasParking = hasParking;
 	}
-
-
-
 	
-	public long id;	
-	public boolean HasSmokingZone;
-	public boolean HasAC;
-	public boolean HasWIFI;
-	public boolean HasParking;
-	public String Name;
-	public String Address;
-	public String Location;
-	public String ContactNo;	
-	public String OpenDuration;
-	public String Holiday;
-	public String SpecialFeatures;
-	public String PrimeType;
-	public String Standard;
-	public String ActiveStatus;
-	public int SeatCapacity;
-	public Double Rating;
-	public long TotalVote;
-	public float PersonalRating;
 		
 }
