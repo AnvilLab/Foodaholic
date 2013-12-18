@@ -90,12 +90,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
    //user and restaurant joint primary key
    private static final String CREATE_TABLE_RATE_RESTAURANT = "CREATE TABLE "
            + TABLE_RATE_RESTAURANT  + "(" + KEY_USER_ID + " INTEGER,"  + KEY_RESTAURANT_ID + " INTEGER," 
-   		   + KEY_RATING + " REAL," +  KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_RESTAURANT_ID + ", " + KEY_CREDENTIAL + "))";
+   		   + KEY_RATING + " REAL," +  KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_RESTAURANT_ID + ", " + KEY_USER_ID + "))";
    
    //user and menu joint primary key
    private static final String CREATE_TABLE_RATE_ITEM = "CREATE TABLE "
            + TABLE_RATE_ITEM + "(" + KEY_USER_ID + " INTEGER," + KEY_MENU_ID + " INTEGER," 
-           + KEY_RATING + " REAL," + KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_MENU_ID + ", " + KEY_CREDENTIAL + "))";
+           + KEY_RATING + " REAL," + KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_MENU_ID + ", " + KEY_USER_ID + "))";
    
    
 
@@ -187,7 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		ArrayList<MenuItem> Menus=new ArrayList<MenuItem>();
 		
 		String selectQuery = "SELECT  * FROM " + TABLE_MENU + " WHERE "
-	            + KEY_RESTAURANT_ID + " = '" + restaurantId;
+	            + KEY_RESTAURANT_ID + " = " + restaurantId;
 		
 		 SQLiteDatabase db = this.getReadableDatabase();
 		 Cursor cursor = db.rawQuery(selectQuery, null);
@@ -205,7 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		            menu.setAvailableTime((cursor.getString(cursor.getColumnIndex(KEY_AVAILABLE_TIME))));
 		            menu.setPrice((cursor.getDouble(cursor.getColumnIndex(KEY_PRICE))));
 		            menu.setTotalVote((cursor.getLong(cursor.getColumnIndex(KEY_TOTAL_VOTE))));
-		            menu.setRating((cursor.getDouble(cursor.getColumnIndex(KEY_RATING))));
+		            menu.setRating((cursor.getFloat(cursor.getColumnIndex(KEY_RATING))));
 		            
 		            Menus.add(menu);
 		            
@@ -345,7 +345,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    
 	}
 	
-	
+	//WORK HERE
+	public long getRestaurantsByAddress(String key)
+	{
+		//ArrayList<Restaurant> restaurants=new ArrayList<Restaurant>();
+		String selectQuery = "SELECT  * FROM " + TABLE_RESTAURANT + " WHERE "
+	            + KEY_ADDRESS + " LIKE '%" + key +"%'";
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		
+		return cursor.getCount();
+		
+	}
 
 }
 

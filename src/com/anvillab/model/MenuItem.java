@@ -2,6 +2,26 @@ package com.anvillab.model;
 
 public class MenuItem {
 	
+	//sqlite test constructor
+	public MenuItem(long id, String name, String category, String subCatergory,
+			String package1, String tags, String availableTime, Double price,
+			float rating, long totalVote, float personalRating,
+			float aggregateRating, long restaurantId) {
+		super();
+		this.id = id;
+		Name = name;
+		Category = category;
+		SubCatergory = subCatergory;
+		Package = package1;
+		Tags = tags;
+		AvailableTime = availableTime;
+		Price = price;
+		Rating = rating;
+		TotalVote = totalVote;
+		this.personalRating = personalRating;
+		RestaurantId = restaurantId;
+	}
+	
 	public long id;
 	public String Name;
 	public String Category;
@@ -10,9 +30,22 @@ public class MenuItem {
 	public String Tags;
 	public String AvailableTime;
 	public Double Price;
-	public Double Rating;
+	public float Rating;
 	public long TotalVote;
+	public float personalRating;
 	public long RestaurantId;
+	
+	public MenuItem()
+	{
+		
+	}
+	
+	public float getPersonalRating() {
+		return personalRating;
+	}
+	public void setPersonalRating(float personalRating) {
+		this.personalRating = personalRating;
+	}	
 	
 	public long getRestaurantId() {
 		return RestaurantId;
@@ -69,10 +102,10 @@ public class MenuItem {
 	public void setPrice(Double price) {
 		Price = price;
 	}
-	public Double getRating() {
+	public float getRating() {
 		return Rating;
 	}
-	public void setRating(Double rating) {
+	public void setRating(float rating) {
 		Rating = rating;
 	}
 	public long getTotalVote() {
