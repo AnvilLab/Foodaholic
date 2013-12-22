@@ -128,24 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_RESTAURANT);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_ITEM);
 	}
-	
-	
 
-	
-	
-	public void updateItemRating(Review review, long itemId)
-	{
-		SQLiteDatabase db = this.getWritableDatabase();
-		 
-		ContentValues values = new ContentValues();
-	    values=Review.getVal(review, review.MENU, itemId);
-	    
-	    if(review.getReview()!="") values.put(KEY_REVIEW,review.getReview());
-	    
-	    db.update(TABLE_RATE_ITEM, values, KEY_MENU_ID + " = ?" + " AND " + KEY_USER_ID + " = ?",
-	            new String[] { String.valueOf(itemId),String.valueOf(review.getUserId())});
-	    
-	}
 	
 	
 
