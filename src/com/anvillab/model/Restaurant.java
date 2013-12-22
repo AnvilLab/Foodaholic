@@ -1,5 +1,12 @@
 package com.anvillab.model;
 
+import java.util.ArrayList;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.anvillab.helper.*;
+
 public class Restaurant {
 	
 	public long Id;	
@@ -22,6 +29,8 @@ public class Restaurant {
 	public long TotalVote;
 	public float PersonalRating;
 	
+	
+	
 	public Restaurant()
 	{
 		
@@ -32,6 +41,28 @@ public class Restaurant {
 			String specialFeatures, String primeType, String standard,
 			String activeStatus, int seatCapacity, Double rating,long totalVote) {
 		super();
+		Name = name;
+		Address = address;
+		Location = location;
+		ContactNo = contactNo;
+		OpenDuration = openDuration;
+		Holiday = holiday;
+		SpecialFeatures = specialFeatures;
+		PrimeType = primeType;
+		Standard = standard;
+		ActiveStatus = activeStatus;
+		SeatCapacity = seatCapacity;
+		Rating = rating;
+		TotalVote=totalVote;
+	}
+	
+	public Restaurant(long id, String name, String address, String location,
+			String contactNo, String openDuration, String holiday,
+			String specialFeatures, String primeType, String standard,
+			String activeStatus, int seatCapacity, Double rating,long totalVote) {
+		super();
+		
+		Id=id;
 		Name = name;
 		Address = address;
 		Location = location;
@@ -175,5 +206,35 @@ public class Restaurant {
 		HasParking = hasParking;
 	}
 	
+	//PREPARES A RESTAURANT FOR PUSH TO LOCAL DB
+	public static ContentValues getVal(Restaurant restaurant)
+	{
+		ContentValues values = new ContentValues();
+		values.put(DatabaseHelper.KEY_ID,restaurant.getId());
+		values.put(DatabaseHelper.KEY_NAME,restaurant.getName());
+		values.put(DatabaseHelper.KEY_ADDRESS,restaurant.getAddress());
+		values.put(DatabaseHelper.KEY_LOCATION,restaurant.getLocation());
+		values.put(DatabaseHelper.KEY_PRIME_TYPE, restaurant.getPrimeType());
+		values.put(DatabaseHelper.KEY_OPEN_DURATION, restaurant.getOpenDuration());
+		values.put(DatabaseHelper.KEY_CONTACT, restaurant.getContactNo());
+		values.put(DatabaseHelper.KEY_HOLIDAY, restaurant.getHoliday());
+		values.put(DatabaseHelper.KEY_ACTIVE_STATUS, restaurant.getActiveStatus());
+		values.put(DatabaseHelper.KEY_SPECIAL_FEATURES, restaurant.getSpecialFeatures());
+		values.put(DatabaseHelper.KEY_SEAT_CAPACITY, restaurant.getSeatCapacity());
+		values.put(DatabaseHelper.KEY_RATING, restaurant.getRating());
+		values.put(DatabaseHelper.KEY_TOTAL_VOTE, restaurant.getTotalVote());
+		values.put(DatabaseHelper.KEY_STANDARD, restaurant.getStandard());
+		return values;
+	}
+	
+	//RETURNS RESTAURANT LIST FOR UI
+	public static ArrayList<Restaurant> getRestaurantsFromCursor(Cursor cursor)
+	{
+		ArrayList<Restaurant> restaurants=new ArrayList<Restaurant>();
+		
+		//IMPLEMENTATION HERE//
+		
+		return restaurants;
+	}
 		
 }
