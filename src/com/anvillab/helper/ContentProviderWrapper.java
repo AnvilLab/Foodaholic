@@ -154,6 +154,21 @@ public class ContentProviderWrapper {
 		return cursor;
 	}
 	
+	public double getPersonalResturantRating(long userId,long restaurantId)
+	{
+		double rating = 0;
+		
+		String[] projection = { DatabaseHelper.KEY_RATING }; 
+		
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_RESTAURANT_TABLE);
+		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ? AND " + DatabaseHelper.KEY_USER_ID + " = ?";
+		String selectionArgs[]=new String[] { String.valueOf(restaurantId), String.valueOf(userId) };
+		
+		Cursor cursor = Provider.query(CONTENT_URI, projection, selectionClause, selectionArgs, null);
+		
+		return rating;
+	}
+	
 	public Cursor getRestaurantsByLocationAndKeyword(String Location, String key)
 	{
 		Cursor cursor=getRestaurantsbyLocation(Location);

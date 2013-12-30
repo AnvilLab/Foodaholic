@@ -3,10 +3,8 @@ package com.anvillab.foodaholic;
 
 import com.anvillab.helper.ContentProviderWrapper;
 import com.anvillab.helper.DatabaseHelper;
-
 import com.anvillab.model.User;
 import com.anvillab.sync.SyncUtilities;
-
 import android.widget.Button;
 import android.widget.Toast;
 

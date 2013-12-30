@@ -227,6 +227,27 @@ public class Restaurant {
 		return values;
 	}
 	
+	public static Restaurant polulateFeatures (Restaurant restaurant){
+		
+		String line = restaurant.SpecialFeatures;
+		String features[] = line.split(",");  //w,a,p,s
+		int count = features.length;
+		
+		for(int i=0;i<count;i++){
+			if(features[i].equalsIgnoreCase("w"))
+				restaurant.HasWIFI = true;
+			if(features[i].equalsIgnoreCase("a"))
+				restaurant.HasAC = true;
+			if(features[i].equalsIgnoreCase("p"))
+				restaurant.HasParking = true;
+			if(features[i].equalsIgnoreCase("s"))
+				restaurant.HasSmokingZone = true;	
+		}
+		
+		return restaurant;
+		
+	}
+	
 	//RETURNS RESTAURANT LIST FOR UI
 	public static ArrayList<Restaurant> getRestaurantsFromCursor(Cursor cursor)
 	{
