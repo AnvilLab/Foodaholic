@@ -36,9 +36,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_TOTAL_VOTE = "totalVote";
         
     //Table names
-    public static final String TABLE_USER = "Users";
-    public static final String TABLE_RESTAURANT = "Restaurants";
-    public static final String TABLE_MENU = "MenuItems";
+    public static final String TABLE_USER = "User";
+    public static final String TABLE_RESTAURANT = "Restaurant";
+    public static final String TABLE_MENU = "Menu";
     public static final String TABLE_RATE_RESTAURANT = "Rate_Restaurant";	
     public static final String TABLE_RATE_ITEM = "Rate_Menu";	
     
@@ -129,7 +129,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_ITEM);
 	}
 
-	
+	//INSERT INTO TABLE Restaurants (id, name, address, location, contact, openDuration, holiday, specialFeatures, seatCapacity, primeType, standard, rating, TotalVote, activeStatus) VALUES (50,BFC,Dhanmondi,X,01677467857,10 am- 10 pm,none,AC,90,Fast Food,Moderate,4,1,Active);
+	//Update Foodaholic.Restaurant set RestaurantName='BFC',Address='Dhanmondi',GPSLocation='',ContactNo='01677467857',OpenDuration='10 am- 10 pm',Holiday='none',SpecialFeatures='AC',SeatCapacity=90,PrimeType='Fast Food',Standard='Moderate',Rating=4,TotalVote=1,ActiveStatus='Active' where RestaurantId=11;
 	
 
 }

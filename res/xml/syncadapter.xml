@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sync-adapter
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:contentAuthority="com.anvillab.helper.DataProvider"
+        android:accountType="com.udinic.auth_example"
+        android:userVisible="true"
+        android:supportsUploading="true"
+        android:allowParallelSyncs="false"
+        android:isAlwaysSyncable="true"/>

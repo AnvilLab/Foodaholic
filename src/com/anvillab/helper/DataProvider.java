@@ -2,6 +2,7 @@ package com.anvillab.helper;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -129,6 +130,10 @@ public class DataProvider extends ContentProvider {
 	            break;
             
 		}
+		
+		//NOTIFY
+		Context ctx = getContext();
+        ctx.getContentResolver().notifyChange(uri, null, false);
 		
 		return Uri.parse(AUTHORITY + "/" + insertedId);
 	}		

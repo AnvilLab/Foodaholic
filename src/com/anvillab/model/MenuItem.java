@@ -162,6 +162,7 @@ public class MenuItem {
 		            menu.setTotalVote((cursor.getLong(cursor.getColumnIndex(DatabaseHelper.KEY_TOTAL_VOTE))));
 		            menu.setRating((cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.KEY_RATING))));
 		       
+		            //FORMULATE PERSONAL RATING
 		            
 		            Menus.add(menu);
 		            

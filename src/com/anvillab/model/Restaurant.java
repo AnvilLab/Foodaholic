@@ -233,6 +233,8 @@ public class Restaurant {
 		ArrayList<Restaurant> restaurants=new ArrayList<Restaurant>();
 		
 		//IMPLEMENTATION HERE//
+		//FORMULATE PERSONAL RATING
+		//FORMULATE SPECIAL FEATURES
 		
 		return restaurants;
 	}

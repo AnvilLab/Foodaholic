@@ -3,6 +3,19 @@
     package="com.anvillab.foodaholic"
     android:versionCode="1"
     android:versionName="1.0" >
+    
+    <uses-permission
+            android:name="android.permission.INTERNET"/>
+    <uses-permission
+            android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission
+            android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission
+            android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission
+            android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission
+            android:name="android.permission.MANAGE_ACCOUNTS"/>
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -22,11 +35,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="com.anvillab.helper.DataProvider"
+            android:authorities="com.anvillab.helper.DataProvider" >
+        </provider>
+
+        <service
+            android:name="com.anvillab.sync.SyncService"
+            android:exported="true"
+            android:process=":sync" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
         
-     <provider
-	    android:name="com.anvillab.helper.DataProvider"
-	    android:authorities="com.anvillab.helper.DataProvider" >
-   	 </provider>
+        <service
+            android:name="com.anvillab.sync.AuthenticatorService">
+        <intent-filter>
+            <action android:name="android.accounts.AccountAuthenticator"/>
+        </intent-filter>
+        <meta-data
+            android:name="android.accounts.AccountAuthenticator"
+            android:resource="@xml/authenticator" />
+    </service>
+    
+    <receiver android:name="com.anvillab.sync.SyncTriggerReceiver"/>    
         
     </application>
 
