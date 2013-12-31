@@ -54,6 +54,18 @@ public class DataProvider extends ContentProvider {
 	        case MENUS:
 	        	queryBuilder.setTables(DatabaseHelper.TABLE_MENU);
 	            break;
+	            
+	        case RATE_RESTAURANT:
+	        	queryBuilder.setTables(DatabaseHelper.TABLE_RATE_RESTAURANT);
+	            break;
+	
+	        case RATE_MENU:
+	        	queryBuilder.setTables(DatabaseHelper.TABLE_RATE_ITEM);
+	            break;
+	            
+	        case USERS:
+	        	queryBuilder.setTables(DatabaseHelper.TABLE_USER);
+	            break;    
             
 		}
 		

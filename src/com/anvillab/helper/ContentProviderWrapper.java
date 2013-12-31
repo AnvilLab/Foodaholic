@@ -26,6 +26,8 @@ public class ContentProviderWrapper {
 		Provider=context.getContentResolver();
 	}
 	
+	
+	
 	public long createUser(User user)
 	{
 		long insertedRow = 0;
@@ -154,9 +156,29 @@ public class ContentProviderWrapper {
 		return cursor;
 	}
 	
+	public Cursor getUsers()
+	{
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.USER_TABLE);
+		Cursor cursor = Provider.query(CONTENT_URI, null, null, null, null);
+		return cursor;
+	}
+	
+	public Cursor getRestaurants()
+	{
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
+		Cursor cursor = Provider.query(CONTENT_URI, null, null, null, null);
+		return cursor;
+	}
+	
+	public Cursor getRestaurantRatings()
+	{
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_RESTAURANT_TABLE);
+		Cursor cursor = Provider.query(CONTENT_URI, null, null, null, null);
+		return cursor;
+	}
+	
 	public double getPersonalResturantRating(long userId,long restaurantId)
 	{
-		double rating = 0;
 		
 		String[] projection = { DatabaseHelper.KEY_RATING }; 
 		
@@ -165,14 +187,14 @@ public class ContentProviderWrapper {
 		String selectionArgs[]=new String[] { String.valueOf(restaurantId), String.valueOf(userId) };
 		
 		Cursor cursor = Provider.query(CONTENT_URI, projection, selectionClause, selectionArgs, null);
+		cursor.moveToFirst();
 		
-		return rating;
+		return cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.KEY_RATING));
 	}
 	
 	public Cursor getRestaurantsByLocationAndKeyword(String Location, String key)
 	{
 		Cursor cursor=getRestaurantsbyLocation(Location);
-		
 		return cursor;
 	}
 

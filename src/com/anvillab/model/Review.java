@@ -13,8 +13,9 @@ public class Review {
 	public long UserId;
 	public String Review;
 	
-	public Review(float rating, String review) {
+	public Review(float rating, String review, long userId) {
 		super();
+		UserId = userId;
 		Rating = rating;
 		Review = review;
 	}

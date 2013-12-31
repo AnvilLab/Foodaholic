@@ -227,7 +227,7 @@ public class Restaurant {
 		return values;
 	}
 	
-	public static Restaurant polulateFeatures (Restaurant restaurant){
+	public static Restaurant populateFeatures (Restaurant restaurant){
 		
 		String line = restaurant.SpecialFeatures;
 		String features[] = line.split(",");  //w,a,p,s
