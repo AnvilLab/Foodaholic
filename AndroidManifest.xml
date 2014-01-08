@@ -3,19 +3,13 @@
     package="com.anvillab.foodaholic"
     android:versionCode="1"
     android:versionName="1.0" >
-    
-    <uses-permission
-            android:name="android.permission.INTERNET"/>
-    <uses-permission
-            android:name="android.permission.READ_SYNC_SETTINGS"/>
-    <uses-permission
-            android:name="android.permission.WRITE_SYNC_SETTINGS"/>
-    <uses-permission
-            android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
-    <uses-permission
-            android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission
-            android:name="android.permission.MANAGE_ACCOUNTS"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -53,19 +47,27 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-        
-        <service
-            android:name="com.anvillab.sync.AuthenticatorService">
-        <intent-filter>
-            <action android:name="android.accounts.AccountAuthenticator"/>
-        </intent-filter>
+        <service 
+            android:name="com.anvillab.sync.AuthenticatorService" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <receiver android:name="com.anvillab.sync.SyncTriggerReceiver" />
+
         <meta-data
-            android:name="android.accounts.AccountAuthenticator"
-            android:resource="@xml/authenticator" />
-    </service>
-    
-    <receiver android:name="com.anvillab.sync.SyncTriggerReceiver"/>    
-        
-    </application>
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/app_name" >
+        </activity>
+       </application>
 
 </manifest>

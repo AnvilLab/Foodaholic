@@ -17,11 +17,12 @@ public class User {
 	
 	
 	public User(long userId, String facebookId, String credential,
-			Date lastUpdatedTime) {
+			Date lastUpdatedTime, long lastUpdatedId) {
 		super();
 		this.userId = userId;
 		this.facebookId = facebookId;
 		this.credential = credential;
+		this.lastUpdatedId=lastUpdatedId;
 		this.lastUpdatedTime = lastUpdatedTime;
 	}
 	

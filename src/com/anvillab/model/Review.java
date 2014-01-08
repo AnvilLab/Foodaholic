@@ -54,6 +54,7 @@ public class Review {
 	    else values.put(DatabaseHelper.KEY_MENU_ID, id);
 	    
 	    values.put(DatabaseHelper.KEY_USER_ID, review.getUserId());
+	    values.put(DatabaseHelper.KEY_IS_UPDATED, 0);
 	    
 	    return values;
 	}

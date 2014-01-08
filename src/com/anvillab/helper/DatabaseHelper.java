@@ -2,6 +2,7 @@ package com.anvillab.helper;
 
 import java.util.ArrayList;
 
+import com.anvillab.model.DBLog;
 import com.anvillab.model.Restaurant;
 import com.anvillab.model.Review;
 import com.anvillab.model.MenuItem;
@@ -33,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_RATING= "rating";
     public static final String KEY_REVIEW= "review";
     public static final String KEY_NAME = "name";
+    public static final String KEY_IS_UPDATED = "isUpdated";
     public static final String KEY_TOTAL_VOTE = "totalVote";
         
     //Table names
@@ -53,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_LOCATION = "location";
     public static final String KEY_CONTACT = "contact";
+    public static final String KEY_LOCATION_TAG = "locationTag";
     public static final String KEY_OPEN_DURATION = "openDuration";
     public static final String KEY_HOLIDAY = "holiday";
     public static final String KEY_SPECIAL_FEATURES = "specialFeatures";
@@ -89,12 +92,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
    
    //user and restaurant joint primary key
    public static final String CREATE_TABLE_RATE_RESTAURANT = "CREATE TABLE "
-           + TABLE_RATE_RESTAURANT  + "(" + KEY_USER_ID + " INTEGER,"  + KEY_RESTAURANT_ID + " INTEGER," 
+           + TABLE_RATE_RESTAURANT  + "(" + KEY_USER_ID + " INTEGER,"  + KEY_LAST_UPDATED + " INTEGER,"  + KEY_RESTAURANT_ID + " INTEGER," 
    		   + KEY_RATING + " REAL," +  KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_RESTAURANT_ID + ", " + KEY_USER_ID + "))";
    
    //user and menu joint primary key
    public static final String CREATE_TABLE_RATE_ITEM = "CREATE TABLE "
-           + TABLE_RATE_ITEM + "(" + KEY_USER_ID + " INTEGER," + KEY_MENU_ID + " INTEGER," 
+           + TABLE_RATE_ITEM + "(" + KEY_USER_ID + " INTEGER," + KEY_LAST_UPDATED + " INTEGER," + KEY_MENU_ID + " INTEGER," 
            + KEY_RATING + " REAL," + KEY_REVIEW + " TEXT," + " PRIMARY KEY " + "(" + KEY_MENU_ID + ", " + KEY_USER_ID + "))";
    
    
@@ -129,9 +132,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_ITEM);
 	}
 
-	//INSERT INTO TABLE Restaurants (id, name, address, location, contact, openDuration, holiday, specialFeatures, seatCapacity, primeType, standard, rating, TotalVote, activeStatus) VALUES (50,BFC,Dhanmondi,X,01677467857,10 am- 10 pm,none,AC,90,Fast Food,Moderate,4,1,Active);
-	//Update Foodaholic.Restaurant set RestaurantName='BFC',Address='Dhanmondi',GPSLocation='',ContactNo='01677467857',OpenDuration='10 am- 10 pm',Holiday='none',SpecialFeatures='AC',SeatCapacity=90,PrimeType='Fast Food',Standard='Moderate',Rating=4,TotalVote=1,ActiveStatus='Active' where RestaurantId=11;
-	
+	public void executeScript(ArrayList<DBLog> dbLogs)
+	{
+		SQLiteDatabase database = this.getWritableDatabase();
+		
+		for (int i=0; i < dbLogs.size() ; i++)
+			database.execSQL(dbLogs.get(i).SqlString);
+	}
 
 }
 

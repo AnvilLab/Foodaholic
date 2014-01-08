@@ -1,7 +1,13 @@
 package com.anvillab.sync;
 
+import java.io.Console;
+import java.util.ArrayList;
+
 import com.anvillab.foodaholic.MainActivity;
 import com.anvillab.foodaholic.R;
+import com.anvillab.helper.ContentProviderWrapper;
+import com.anvillab.helper.DatabaseHelper;
+import com.anvillab.model.DBLog;
 
 import android.accounts.Account;
 import android.annotation.SuppressLint;
@@ -15,14 +21,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.util.Log;
 
 @SuppressLint("NewApi")
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
    
     // Global variables
     // Define a variable to contain a content resolver instance
+	ContentProviderWrapper wrapper;
     ContentResolver mContentResolver;
     private NotificationManager mManager; 
+    DatabaseHelper dbHelper;
     Context context;
     
     /**
@@ -36,6 +45,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
          */
         mContentResolver = context.getContentResolver();
         this.context=context;
+        wrapper=new ContentProviderWrapper(context);
+        dbHelper=new DatabaseHelper(context);
     }
     
     /**
@@ -69,19 +80,24 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             ContentProviderClient provider,
             SyncResult syncResult) {
     
-    	
-    	//test code
-    	 mManager = (NotificationManager) context.getSystemService(this.context.NOTIFICATION_SERVICE);
-         Intent intent1 = new Intent(this.context,MainActivity.class);
-       
-         Notification notification = new Notification(R.drawable.ic_launcher,"This is a test message!", System.currentTimeMillis());
-         intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP| Intent.FLAG_ACTIVITY_CLEAR_TOP);
-   
-         PendingIntent pendingNotificationIntent = PendingIntent.getActivity( this.context,0, intent1,PendingIntent.FLAG_UPDATE_CURRENT);
-         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-         notification.setLatestEventInfo(context, "AlarmManagerDemo", "This is a test message!", pendingNotificationIntent);
-   
-         mManager.notify(0, notification);
-    	
+         
+         String requestDate = wrapper.getMaxDateFromDatabase();
+         SyncUtilities.getDatabaseScripts(requestDate);
+         try{
+         
+        	 ArrayList<DBLog> logs = SyncUtilities.getDatabaseScripts(requestDate);
+	         if(logs.size()>0)
+	         {
+	        	 dbHelper.executeScript(logs);
+	        	 String maxDate = DBLog.getMaxDate(logs);
+	        	 wrapper.updateUserSyncFields(maxDate, 0);
+	         }
+	         
+         }
+         catch(Exception e)
+         {
+        	 Log.d("Ex", e.getMessage());
+         }
+         
     }
 }

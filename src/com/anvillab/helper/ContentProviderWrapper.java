@@ -26,10 +26,11 @@ public class ContentProviderWrapper {
 		Provider=context.getContentResolver();
 	}
 	
-	
-	
 	public long createUser(User user)
 	{
+		if(ifUserExists(user.getUserId()))
+			return updateUser(user);
+
 		long insertedRow = 0;
 		
 		ContentValues values=new ContentValues();
@@ -38,7 +39,24 @@ public class ContentProviderWrapper {
 		CONTENT_URI = Provider.insert(CONTENT_URI, values);
 		
 		insertedRow = Long.valueOf(CONTENT_URI.getLastPathSegment().toString());
+		updateUserSyncFields();
 		return insertedRow;
+	}
+	
+	public boolean ifUserExists(long userId)
+	{
+		boolean tick = false;
+		
+		String selectionClause=DatabaseHelper.KEY_ID + " = ?";
+		String selectionArgs[]=new String[] { String.valueOf(userId) };
+		
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.USER_TABLE);
+		Cursor cursor = Provider.query(CONTENT_URI, null, selectionClause, selectionArgs, null);
+		
+		if(cursor.getCount()!=0)
+			tick = true;
+		
+		return tick;
 	}
 	
 	public long updateUser(User user)
@@ -51,8 +69,53 @@ public class ContentProviderWrapper {
 		values=User.getVal(user);
 		
 		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.USER_TABLE);
-		return Provider.update(CONTENT_URI, values, selectionClause, selectionArgs);
+		long rowsUpdated = Provider.update(CONTENT_URI, values, selectionClause, selectionArgs);
 		
+		updateUserSyncFields();
+		return rowsUpdated;
+	}
+	
+	public String getMaxDateFromDatabase()
+	{
+		Cursor cursor;
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.USER_TABLE);
+		cursor = Provider.query(CONTENT_URI, new String[] {"MAX(lastUpdated) AS lastUpdated"} , null, null, null);
+		cursor.moveToFirst();
+		
+		String maxDate = cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_LAST_UPDATED));
+		return maxDate;
+	}
+	
+	public long updateUserSyncFields()
+	{
+		  
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.USER_TABLE);
+		
+		Cursor cursor = Provider.query(CONTENT_URI, new String[] {"MAX(lastUpdatedId) AS lastUpdatedId"} , null, null, null);
+		cursor.moveToFirst();
+		long maxId = cursor.getLong(cursor.getColumnIndex(DatabaseHelper.KEY_LAST_UPDATED_ID));
+		
+		cursor = Provider.query(CONTENT_URI, new String[] {"MAX(lastUpdated) AS lastUpdated"} , null, null, null);
+		cursor.moveToFirst();
+		
+		String maxDate = cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_LAST_UPDATED));
+		
+		ContentValues values = new ContentValues();
+		
+		values.put(DatabaseHelper.KEY_LAST_UPDATED, maxDate);
+		values.put(DatabaseHelper.KEY_LAST_UPDATED_ID, maxId);
+		
+		return Provider.update(CONTENT_URI, values, null, null);
+	}
+	
+	public long updateUserSyncFields(String maxDate,long maxId)
+	{
+		ContentValues values = new ContentValues();
+		
+		values.put(DatabaseHelper.KEY_LAST_UPDATED, maxDate);
+		values.put(DatabaseHelper.KEY_LAST_UPDATED_ID, maxId);
+		
+		return Provider.update(CONTENT_URI, values, null, null);
 	}
 	
 	public long createRestaurant(Restaurant restaurant)
@@ -81,8 +144,12 @@ public class ContentProviderWrapper {
 		return insertedRow;
 	}
 	
+
 	public long rateRestaurant(Review review, long restaurantId)
 	{
+		if(ifRestaurantRatingExists(review.getUserId(),restaurantId))
+			return updateRestaurantRating(review, restaurantId);
+		
 		long insertedRow = 0;
 		 
 	    ContentValues values = new ContentValues();
@@ -94,6 +161,22 @@ public class ContentProviderWrapper {
 		insertedRow = Long.valueOf(CONTENT_URI.getLastPathSegment().toString());
 		return insertedRow;
 	    
+	}
+	
+	public boolean ifRestaurantRatingExists(long userId, long restId)
+	{
+		boolean tick = false;
+		
+		String selectionClause=DatabaseHelper.KEY_USER_ID + " = ?" + " AND " + DatabaseHelper.KEY_RESTAURANT_ID + " = ?";
+		String selectionArgs[]=new String[] { String.valueOf(userId), String.valueOf(restId) };
+		
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_RESTAURANT_TABLE);
+		Cursor cursor = Provider.query(CONTENT_URI, null, selectionClause, selectionArgs, null);
+		
+		if(cursor.getCount()!=0)
+			tick = true;
+		
+		return tick;
 	}
 	
 
@@ -114,6 +197,9 @@ public class ContentProviderWrapper {
 	
 	public long rateMenu(Review review, long menuId)
 	{
+		if(ifMenuRatingExists(review.getUserId(),menuId))
+			return updateMenuRating(review, menuId);
+		
 		long insertedRow = 0;
 		 
 	    ContentValues values = new ContentValues();
@@ -126,6 +212,25 @@ public class ContentProviderWrapper {
 		return insertedRow;
 	    
 	}
+	
+	
+	public boolean ifMenuRatingExists(long userId, long menuId)
+	{
+		boolean tick = false;
+		
+		String selectionClause=DatabaseHelper.KEY_USER_ID + " = ?" + " AND " + DatabaseHelper.KEY_MENU_ID + " = ?";
+		String selectionArgs[]=new String[] { String.valueOf(userId), String.valueOf(menuId) };
+		
+		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_MENU_TABLE);
+		Cursor cursor = Provider.query(CONTENT_URI, null, selectionClause, selectionArgs, null);
+		
+		if(cursor.getCount()!=0)
+			tick = true;
+		
+		return tick;
+	}
+	
+	
 	
 	public long updateMenuRating(Review review, long menuId)
 	{

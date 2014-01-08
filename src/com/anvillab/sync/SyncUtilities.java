@@ -1,6 +1,23 @@
 package com.anvillab.sync;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Console;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+
+import com.anvillab.helper.ParseHelper;
+import com.anvillab.model.DBLog;
+import com.anvillab.utilities.ServiceUrlMapper;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -10,6 +27,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 
 public class SyncUtilities {
@@ -29,7 +47,6 @@ public class SyncUtilities {
 	
 	public static Account CreateSyncAccount(Context context, String accountName) {
 		
-		deleteAccounts(context);
 		
         // Create the account type and default account
         Account newAccount = new Account(
@@ -61,25 +78,13 @@ public class SyncUtilities {
         return newAccount;
     }
 	
-	public static void deleteAccounts(Context context)
-	{
-		 AccountManager accountManager =
-	                (AccountManager) context.getSystemService(
-	                        context.ACCOUNT_SERVICE);
-		
-		Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
-		
-		if(accounts.length > 0)
-		{
-			for (int i = 0; i < accounts.length; i++) 
-				accountManager.removeAccount(accounts[i], null, null);
-		}
-	}
+	
 	
 	public static void setAccountAndSync(Context context,String accountName)
 	{
 		Bundle bundle=new Bundle();
 		mAccount=CreateSyncAccount(context,accountName);
+
 	
 		ContentResolver.setIsSyncable(mAccount, AUTHORITY, 1);
 		ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
@@ -104,6 +109,53 @@ public class SyncUtilities {
 	    alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
 	    
 	    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-	            1000 * 60 * 1, pendingIntent);
+	            1000 * 60 * 2, pendingIntent);
+	}
+	
+	public static ArrayList<DBLog> getDatabaseScripts(String lastSyncDate)
+	{
+		HttpClient httpclient = new DefaultHttpClient();
+        HttpResponse response;
+        String responseString = "";
+        
+        try {
+        	String url=ServiceUrlMapper.DB_LOGS+"/?date="+lastSyncDate;
+        	url=url.replace(" ","%20");
+        	HttpGet get = new HttpGet(url);
+            response = httpclient.execute(get);
+            
+            StatusLine statusLine = response.getStatusLine();
+            
+            if(statusLine.getStatusCode() == HttpStatus.SC_OK)
+            {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                response.getEntity().writeTo(out);
+                out.close();
+                responseString = out.toString();
+
+            } 
+            else
+            {
+            	responseString="None";
+            }
+        } catch (ClientProtocolException e) {
+            //TODO Handle problems..
+        } catch (IOException e) {
+            //TODO Handle problems..
+        }
+       
+        try 
+        {
+        	if(responseString!="None")
+        		return ParseHelper.DBLogParser(responseString);
+        	
+        	return new ArrayList<DBLog>();
+		} 
+        catch (Exception e) 
+		{
+			// TODO Auto-generated catch block
+			return new ArrayList<DBLog>();
+		}
+        
 	}
 }

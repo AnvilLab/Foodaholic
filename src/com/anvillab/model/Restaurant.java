@@ -224,6 +224,7 @@ public class Restaurant {
 		values.put(DatabaseHelper.KEY_RATING, restaurant.getRating());
 		values.put(DatabaseHelper.KEY_TOTAL_VOTE, restaurant.getTotalVote());
 		values.put(DatabaseHelper.KEY_STANDARD, restaurant.getStandard());
+		
 		return values;
 	}
 	
@@ -253,9 +254,30 @@ public class Restaurant {
 	{
 		ArrayList<Restaurant> restaurants=new ArrayList<Restaurant>();
 		
-		//IMPLEMENTATION HERE//
-		//FORMULATE PERSONAL RATING
-		//FORMULATE SPECIAL FEATURES
+		Restaurant restaurant = new Restaurant();
+		
+
+		if (cursor.moveToFirst()) {
+	        do {
+					restaurant.setId((cursor.getLong(cursor.getColumnIndex(DatabaseHelper.KEY_ID))));
+					restaurant.setName((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_NAME))));
+			        restaurant.setPrimeType((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_PRIME_TYPE))));
+			        restaurant.setStandard((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_STANDARD))));
+			        restaurant.setContactNo((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_CONTACT))));
+			        restaurant.setAddress((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_ADDRESS))));
+			        restaurant.setOpenDuration((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_OPEN_DURATION))));
+			        restaurant.setSpecialFeatures((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_SPECIAL_FEATURES))));
+			        restaurant.setTotalVote((cursor.getLong(cursor.getColumnIndex(DatabaseHelper.KEY_TOTAL_VOTE))));
+			        restaurant.setRating((cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.KEY_RATING))));
+			        restaurant.setSeatCapacity((cursor.getInt(cursor.getColumnIndex(DatabaseHelper.KEY_SEAT_CAPACITY))));
+			        restaurant.setActiveStatus((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_ACTIVE_STATUS))));
+			        restaurant.setHoliday((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_HOLIDAY))));
+			        restaurant.setLocation((cursor.getString(cursor.getColumnIndex(DatabaseHelper.KEY_LOCATION))));
+			      
+			        //FORMULATE PERSONAL RATING
+			        
+	        } while (cursor.moveToNext());
+		 }
 		
 		return restaurants;
 	}

@@ -3,12 +3,15 @@ package com.anvillab.foodaholic;
 
 import java.util.Date;
 
+import com.anvillab.asynctask.GetRequestTask;
 import com.anvillab.helper.ContentProviderWrapper;
 import com.anvillab.helper.DatabaseHelper;
 import com.anvillab.model.Restaurant;
 import com.anvillab.model.Review;
 import com.anvillab.model.User;
 import com.anvillab.sync.SyncUtilities;
+import com.anvillab.utilities.ServiceUrlMapper;
+
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -36,29 +39,28 @@ public class MainActivity extends Activity {
 	}
 	
 	public void sendMessage(View view) {
-	    insertRating();
+		//createUser();
+		//createRestaurants();
+		insertRating();
+		Toast.makeText(getApplicationContext(), String.valueOf(wrapper.getPersonalResturantRating(1, 1)), Toast.LENGTH_LONG).show();
 	}
 	
 	//CREATE ACCOUNT AND SET SYNC SETTINGS
 	public void setSync(View view)
 	{
-		createUser();
-		createRestaurants();
-		insertRating();
-		Toast.makeText(this, String.valueOf((wrapper.getPersonalResturantRating(1, 1))), Toast.LENGTH_LONG).show();
-		//SyncUtilities.setAccountAndSync(getApplicationContext(), "MAGNETO");
+	
 	}
 	
 	public void insertRating()
 	{
-		Review review=new Review((float)3.5,"Good",1);
+		Review review=new Review((float)5.0,"Good",1);
 		wrapper.rateRestaurant(review, 1);
 		
 	}
 	
 	public void createRestaurants()
 	{
-		Restaurant restaurant=new Restaurant(2,"Pizza Hut", "Dhaka", "123",
+		Restaurant restaurant=new Restaurant(1,"Pizza Hut", "Dhaka", "123",
 				"go", "str", "str",
 				"str", "str", "str",
 				"Active", 120, 4.5,120);
@@ -69,8 +71,10 @@ public class MainActivity extends Activity {
 	
 	public void createUser()
 	{
-		userCount++;
-		User user = new User(1,"galib2145","Kx55ttU",new Date());
+		
+		User user = new User(1,"galib2145","Kx55ttU",new Date(),6);
+		wrapper.createUser(user);
+		user = new User(2,"galib2145","Kx55ttU",new Date(),7);
 		wrapper.createUser(user);
 	}
 		
