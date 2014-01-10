@@ -57,6 +57,18 @@ public class CursorLoaderFactory {
         case QueryMapper.GET_MENUS_BY_RESTAURANT:
         	loader=getMenuByRestaurant(params[0]);
             break;
+            
+        case QueryMapper.GET_CATEGORIES_BY_RESTAURANT:
+        	loader=getRestaurantCategories(params[0]);
+            break;
+            
+        case QueryMapper.GET_SUBCATEGORIES_BY_RESTAURANT:
+        	loader=getRestaurantSubCategories(params[0]);
+            break;
+            
+        case QueryMapper.GET_PACKAGES_BY_RESTAURANT:
+        	loader=getPackagesByRestaurant(params[0]);
+            break;
         
 		}
 		
@@ -154,6 +166,39 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
+	public CursorLoader getRestaurantCategories(String restaurantId)
+	{
+		
+		String[] projection = { "DISTINCT category" };
+		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ?";
+		String selectionArgs[]=new String[] { String.valueOf(restaurantId)};
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.MENU_TABLE);
 	
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,projection,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
+		return loader;
+	}
+	
+	public CursorLoader getRestaurantSubCategories(String restaurantId)
+	{
+		
+		String[] projection = { "DISTINCT subCategory" };
+		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ?";
+		String selectionArgs[]=new String[] { String.valueOf(restaurantId)};
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.MENU_TABLE);
+	
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,projection,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
+		return loader;
+	}
+	
+	
+	public CursorLoader getPackagesByRestaurant(String restaurantId)
+	{
+		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ? AND " + DatabaseHelper.KEY_PACKAGE + " != ?";
+		String selectionArgs[]=new String[] { String.valueOf(restaurantId),""};
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.MENU_TABLE);
+	
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
+		return loader;
+	}
 	
 }

@@ -151,15 +151,15 @@ public class ContentProviderWrapper {
 	}
 	
 
-	public long rateRestaurant(Review review, long restaurantId)
+	public long rateRestaurant(Review review)
 	{
-		if(ifRestaurantRatingExists(review.getUserId(),restaurantId))
-			return updateRestaurantRating(review, restaurantId);
+		if(ifRestaurantRatingExists(review.getUserId(),review.getAssociatedId()))
+			return updateRestaurantRating(review);
 		
 		long insertedRow = 0;
 		 
 	    ContentValues values = new ContentValues();
-	    values=Review.getVal(review, review.RESTAURANT, restaurantId);
+	    values=Review.getVal(review, review.RESTAURANT);
 	    
 	    CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_RESTAURANT_TABLE);
 		CONTENT_URI = Provider.insert(CONTENT_URI, values);
@@ -186,14 +186,14 @@ public class ContentProviderWrapper {
 	}
 	
 
-	public long updateRestaurantRating(Review review, long restaurantId)
+	public long updateRestaurantRating(Review review)
 	{
 		
 		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ?";
-		String selectionArgs[]=new String[] { String.valueOf(restaurantId) };
+		String selectionArgs[]=new String[] { String.valueOf(review.getAssociatedId()) };
 		 
 	    ContentValues values = new ContentValues();
-	    values=Review.getVal(review, Review.RESTAURANT, restaurantId);
+	    values=Review.getVal(review, Review.RESTAURANT);
 	    
 	    CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_RESTAURANT_TABLE);
 		
@@ -201,15 +201,15 @@ public class ContentProviderWrapper {
 	    
 	}
 	
-	public long rateMenu(Review review, long menuId)
+	public long rateMenu(Review review)
 	{
-		if(ifMenuRatingExists(review.getUserId(),menuId))
-			return updateMenuRating(review, menuId);
+		if(ifMenuRatingExists(review.getUserId(),review.getAssociatedId()))
+			return updateMenuRating(review);
 		
 		long insertedRow = 0;
 		 
 	    ContentValues values = new ContentValues();
-	    values=Review.getVal(review, Review.MENU, menuId);
+	    values=Review.getVal(review, Review.MENU);
 	    
 	    CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_MENU_TABLE);
 		CONTENT_URI = Provider.insert(CONTENT_URI, values);
@@ -238,14 +238,14 @@ public class ContentProviderWrapper {
 	
 	
 	
-	public long updateMenuRating(Review review, long menuId)
+	public long updateMenuRating(Review review)
 	{
 		
 		String selectionClause=DatabaseHelper.KEY_MENU_ID + " = ?";
-		String selectionArgs[]=new String[] { String.valueOf(menuId) };
+		String selectionArgs[]=new String[] { String.valueOf(review.getAssociatedId()) };
 		 
 	    ContentValues values = new ContentValues();
-	    values=Review.getVal(review, Review.MENU, menuId);
+	    values=Review.getVal(review, Review.MENU);
 	    
 	    CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_MENU_TABLE);
 		

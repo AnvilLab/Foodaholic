@@ -41,29 +41,23 @@ public class MainActivity extends Activity  {
 	}
 	
 	public void sendMessage(View view) {
-		createMenu();
+		createRestaurants();
+		createMenus();
 		
 	}
 	
 	//CREATE ACCOUNT AND SET SYNC SETTINGS
 	public void setSync(View view)
 	{
-	//	Intent intent = new Intent(this, LoaderTestActivity.class);
-	//	startActivity(intent);
-		Cursor c = wrapper.getData();
-		String str="";
-		for(c.moveToFirst();!c.isAfterLast();c.moveToNext())
-		{
-			str+=c.getString(c.getColumnIndex("N"))+" "+c.getString(c.getColumnIndex("m"))+"\n";
-		}
-		Log.d("milu",String.valueOf(c.getCount()));
-		Toast.makeText(getApplicationContext(),str,Toast.LENGTH_LONG).show();
+		Intent intent = new Intent(this, LoaderTestActivity.class);
+		startActivity(intent);
+		
 	}
 	
 	public void insertRating()
 	{
-		Review review=new Review((float)5.0,"Good",1);
-		wrapper.rateRestaurant(review, 1);
+		Review review=new Review((float)5.0,"Good",1,1);
+		wrapper.rateRestaurant(review);
 		
 	}
 	
@@ -79,11 +73,13 @@ public class MainActivity extends Activity  {
 		}
 	}
 	
-	public void createMenu()
+	public void createMenus()
 	{
+		MenuItem menu;
 		for(long i=1;i<=5;i++)
 		{
-			MenuItem menu= new MenuItem(12+i,"menu" ,"category","subCat","package","tag","x",10.0,3,10,5,1);
+			if(i%2 == 0) menu= new MenuItem(12+i,"menu" ,"evCategory","subCat","package","tag","x",10.0,3,10,5,1);
+			else menu= new MenuItem(12+i,"menu" ,"odCategory","subCat","package","tag","x",10.0,3,10,5,1);
 			wrapper.createMenu(menu);
 		}
 	}

@@ -12,12 +12,14 @@ public class Review {
 	public float Rating;
 	public long UserId;
 	public String Review;
+	public long AssociatedId;
 	
-	public Review(float rating, String review, long userId) {
+	public Review(float rating, String review, long userId,long associatedId) {
 		super();
 		UserId = userId;
 		Rating = rating;
 		Review = review;
+		AssociatedId = associatedId;
 	}
 	
 	public long getUserId() {
@@ -42,20 +44,30 @@ public class Review {
 
 	public void setReview(String review) {
 		Review = review;
-	} 
+	}
 	
-	public static ContentValues getVal(Review review,int choice,long id)
+	public long getAssociatedId() {
+		return AssociatedId;
+	}
+
+	public void setAssociatedId(long associatedId) {
+		AssociatedId = associatedId;
+	}
+	
+	public static ContentValues getVal(Review review,int choice)
 	{
 		ContentValues values = new ContentValues();
 	    values.put(DatabaseHelper.KEY_RATING, 	review.getRating());
 	    values.put(DatabaseHelper.KEY_REVIEW, review.getReview());
 	    
-	    if(choice==1) values.put(DatabaseHelper.KEY_RESTAURANT_ID, id);
-	    else values.put(DatabaseHelper.KEY_MENU_ID, id);
+	    if(choice==1) values.put(DatabaseHelper.KEY_RESTAURANT_ID,review.getAssociatedId());
+	    else values.put(DatabaseHelper.KEY_MENU_ID, review.getAssociatedId());
 	    
 	    values.put(DatabaseHelper.KEY_USER_ID, review.getUserId());
 	    values.put(DatabaseHelper.KEY_IS_UPDATED, 0);
 	    
 	    return values;
 	}
+
+	
 }
