@@ -16,12 +16,14 @@ public class DataProvider extends ContentProvider {
 	private static final int USERS = 5;
 	private static final int RATE_RESTAURANT = 7;
 	private static final int RATE_MENU = 9;
+	private static final int TAG_QUERY=10;
 	
 	public static final String RESTAURANT_TABLE = "Restaurants";
 	public static final String MENU_TABLE = "Menus";
 	public static final String USER_TABLE = "Users";
 	public static final String RATE_RESTAURANT_TABLE = "rateRestaurant";
 	public static final String RATE_MENU_TABLE = "rateMenu";
+	public static final String TAG_TABLE="tagQuery";
 	
 	private DatabaseHelper db;
 	
@@ -35,6 +37,7 @@ public class DataProvider extends ContentProvider {
 	    uriMatcher.addURI(AUTHORITY, USER_TABLE, USERS);
 	    uriMatcher.addURI(AUTHORITY, RATE_RESTAURANT_TABLE, RATE_RESTAURANT);
 	    uriMatcher.addURI(AUTHORITY, RATE_MENU_TABLE, RATE_MENU);
+	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, TAG_QUERY);
 	}
 	
 	@Override
@@ -65,7 +68,10 @@ public class DataProvider extends ContentProvider {
 	            
 	        case USERS:
 	        	queryBuilder.setTables(DatabaseHelper.TABLE_USER);
-	            break;    
+	            break;
+	            
+	        case TAG_QUERY:
+	        	return tag(database);  
             
 		}
 		
@@ -77,7 +83,10 @@ public class DataProvider extends ContentProvider {
 	}
 
 
-	
+	public Cursor tag(SQLiteDatabase database)
+	{
+		return database.rawQuery("select name as \"N\",\"menu\" as \"m\" from Menu Union select category as\"N\",\"menu\" as \"m\" from Menu Union select subCategory as\"N\",\"menu\" as \"m\" from Menu Union select package as\"N\",\"menu\" as \"m\" from Menu Union select name as \"N\", \"rest\" as \"m\" from Restaurant ",null);
+	}
 
 	@Override
 	public int delete(Uri uri, String selectionClause, String[] selectionArgs) {

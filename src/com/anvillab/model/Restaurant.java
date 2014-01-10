@@ -26,6 +26,7 @@ public class Restaurant {
 	public String ActiveStatus;
 	public int SeatCapacity;
 	public Double Rating;
+	public String LocationTag;
 	public long TotalVote;
 	public float PersonalRating;
 	
@@ -56,7 +57,9 @@ public class Restaurant {
 		TotalVote=totalVote;
 	}
 	
-	public Restaurant(long id, String name, String address, String location,
+	
+
+	public Restaurant(long id, String name,String locationTag, String address, String location,
 			String contactNo, String openDuration, String holiday,
 			String specialFeatures, String primeType, String standard,
 			String activeStatus, int seatCapacity, Double rating,long totalVote) {
@@ -66,6 +69,7 @@ public class Restaurant {
 		Name = name;
 		Address = address;
 		Location = location;
+		LocationTag=locationTag;
 		ContactNo = contactNo;
 		OpenDuration = openDuration;
 		Holiday = holiday;
@@ -78,6 +82,13 @@ public class Restaurant {
 		TotalVote=totalVote;
 	}
 	
+	public String getLocationTag() {
+		return LocationTag;
+	}
+
+	public void setLocationTag(String locationTag) {
+		LocationTag = locationTag;
+	}
 		
 	public float getPersonalRating() {
 		return PersonalRating;
@@ -224,6 +235,7 @@ public class Restaurant {
 		values.put(DatabaseHelper.KEY_RATING, restaurant.getRating());
 		values.put(DatabaseHelper.KEY_TOTAL_VOTE, restaurant.getTotalVote());
 		values.put(DatabaseHelper.KEY_STANDARD, restaurant.getStandard());
+		values.put(DatabaseHelper.KEY_LOCATION_TAG, restaurant.getLocationTag());
 		
 		return values;
 	}

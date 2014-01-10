@@ -9,4 +9,5 @@ public class QueryMapper {
 	public static final int GET_RESTAURANTS_BY_TYPE=5;
 	public static final int GET_RESTAURANTS_BY_NAME=6;
 	public static final int GET_MENUS_BY_KEYWORDS=7;
+	public static final int GET_MENUS_BY_RESTAURANT=8;
 }

@@ -53,6 +53,10 @@ public class CursorLoaderFactory {
         case QueryMapper.GET_MENUS_BY_KEYWORDS:
         	loader=getMenuByMenuKeyword(params[0]);
             break;
+            
+        case QueryMapper.GET_MENUS_BY_RESTAURANT:
+        	loader=getMenuByRestaurant(params[0]);
+            break;
         
 		}
 		
@@ -128,13 +132,23 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
+	public CursorLoader getMenuByRestaurant(String resId)
+	{
+		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ?";
+		String selectionArgs[]=new String[] { resId };
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.MENU_TABLE);
+	
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
+		return loader;
+	}
+	
 	public CursorLoader getMenuByMenuKeyword(String keyword)
 	{
 		keyword = "%" + keyword + "%";
 		
 		String selectionClause=DatabaseHelper.KEY_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_SUB_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_NAME + " LIKE ? OR " + DatabaseHelper.KEY_PACKAGE + " LIKE ?";
 		String selectionArgs[]=new String[] { keyword,keyword,keyword,keyword };
-		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.MENU_TABLE);
 	
 		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
 		return loader;

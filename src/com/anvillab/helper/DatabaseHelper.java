@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //id is populated from server
     public static final String CREATE_TABLE_RESTAURANT = "CREATE TABLE "
             + TABLE_RESTAURANT + "(" + KEY_ID + " INTEGER PRIMARY KEY NOT NULL," + KEY_NAME + " TEXT," 
-    		+ KEY_ADDRESS + " TEXT," + KEY_LOCATION + " TEXT," + KEY_CONTACT + " TEXT," + KEY_OPEN_DURATION + " TEXT,"
+    		+ KEY_ADDRESS + " TEXT," + KEY_LOCATION + " TEXT," + KEY_LOCATION_TAG + " TEXT," + KEY_CONTACT + " TEXT," + KEY_OPEN_DURATION + " TEXT,"
     		+ KEY_PRIME_TYPE + " TEXT," + KEY_HOLIDAY + " TEXT," + KEY_SPECIAL_FEATURES + " TEXT," + KEY_SEAT_CAPACITY + " INTEGER,"
     		+ KEY_STANDARD + " TEXT," + KEY_TOTAL_VOTE + " INTEGER," + KEY_ACTIVE_STATUS + " TEXT,"
     		+ KEY_RATING + " REAL" + ")"; 
@@ -131,6 +131,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_RESTAURANT);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_RATE_ITEM);
 	}
+	
+	
 
 	public void executeScript(ArrayList<DBLog> dbLogs)
 	{

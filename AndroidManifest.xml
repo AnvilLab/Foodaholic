@@ -47,8 +47,7 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-        <service 
-            android:name="com.anvillab.sync.AuthenticatorService" >
+        <service android:name="com.anvillab.sync.AuthenticatorService" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -68,6 +67,10 @@
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name" >
         </activity>
-       </application>
+        <activity
+            android:name="com.anvillab.foodaholic.LoaderTestActivity"
+            android:label="@string/title_activity_loader_test" >
+        </activity>
+    </application>
 
 </manifest>

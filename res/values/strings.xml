@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="app_id">225679170944167</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_loader_test">LoaderTestActivity</string>
 
 </resources>
