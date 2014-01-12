@@ -1,7 +1,6 @@
 package com.anvillab.helper;
 
 import com.anvillab.utilities.QueryMapper;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -67,6 +66,10 @@ public class CursorLoaderFactory {
             break;
             
         case QueryMapper.GET_PACKAGES_BY_RESTAURANT:
+        	loader=getPackagesByRestaurant(params[0]);
+            break;
+            
+        case QueryMapper.GET_MENU_RATINGS_BY_RESTAURANT:
         	loader=getPackagesByRestaurant(params[0]);
             break;
         
@@ -168,7 +171,6 @@ public class CursorLoaderFactory {
 	
 	public CursorLoader getRestaurantCategories(String restaurantId)
 	{
-		
 		String[] projection = { "DISTINCT category" };
 		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ?";
 		String selectionArgs[]=new String[] { String.valueOf(restaurantId)};
@@ -190,7 +192,6 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
-	
 	public CursorLoader getPackagesByRestaurant(String restaurantId)
 	{
 		String selectionClause=DatabaseHelper.KEY_RESTAURANT_ID + " = ? AND " + DatabaseHelper.KEY_PACKAGE + " != ?";
@@ -198,6 +199,28 @@ public class CursorLoaderFactory {
 		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.MENU_TABLE);
 	
 		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
+		return loader;
+	}
+	
+	public CursorLoader getMenuRatingsByRestaurant(String restaurantId,String userId)
+	{
+		String[] projection = { DatabaseHelper.KEY_RATING , DatabaseHelper.KEY_MENU_ID };
+		String selectionClause= DatabaseHelper.KEY_USER_ID + " = ? AND " + DatabaseHelper.KEY_MENU_ID + " IN (SELECT Menu.id FROM Menu WHERE restaurantId = ?)";
+		String selectionArgs[]=new String[] { userId, restaurantId };
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_MENU_TABLE);
+	
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,projection,selectionClause,selectionArgs,null);
+		return loader;
+	}
+	
+	public CursorLoader getRestaurantRatingsByUser(String userId)
+	{
+		String[] projection = { DatabaseHelper.KEY_RATING, DatabaseHelper.KEY_RESTAURANT_ID };
+		String selectionClause= DatabaseHelper.KEY_USER_ID + " = ?";
+		String selectionArgs[]=new String[] { userId };
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RATE_RESTAURANT_TABLE);
+	
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,projection,selectionClause,selectionArgs,null);
 		return loader;
 	}
 	

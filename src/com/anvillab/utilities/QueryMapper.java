@@ -13,4 +13,5 @@ public class QueryMapper {
 	public static final int GET_CATEGORIES_BY_RESTAURANT=9;
 	public static final int GET_SUBCATEGORIES_BY_RESTAURANT=10;
 	public static final int GET_PACKAGES_BY_RESTAURANT=11;
+	public static final int GET_MENU_RATINGS_BY_RESTAURANT=12;
 }

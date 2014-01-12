@@ -28,6 +28,7 @@ import org.json.JSONException;
 import com.anvillab.helper.ParseHelper;
 import com.anvillab.model.User;
 import com.anvillab.utilities.UpdateMapper;
+import com.anvillab.utilities.Utilities;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -39,9 +40,10 @@ public class PostRequestTask extends AsyncTask<String, String, String> {
 	List<NameValuePair> nameValuePair;
 
 	public PostRequestTask(Context _context, List<NameValuePair> paramValuePair) {
+		
 		context = _context;
 		nameValuePair = paramValuePair;
-
+		
 	}
 
 	@Override
@@ -51,27 +53,26 @@ public class PostRequestTask extends AsyncTask<String, String, String> {
 		String responseString = null;
 		try {
 
-			// formulating Post request
 			HttpPost post = new HttpPost(uri[0]);
-			// setting Post parameters
 			post.setEntity(new UrlEncodedFormEntity(nameValuePair));
 			response = httpclient.execute(post);
 
 			StatusLine statusLine = response.getStatusLine();
+			
 			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				response.getEntity().writeTo(out);
 				out.close();
 				responseString = out.toString();
 			} else {
-				// Closes the connection.
 				response.getEntity().getContent().close();
 				throw new IOException(statusLine.getReasonPhrase());
 			}
+		
 		} catch (ClientProtocolException e) {
-			// TODO Handle problems..
+			
 		} catch (IOException e) {
-			// TODO Handle problems..
+			
 		}
 
 		return responseString;
@@ -84,14 +85,15 @@ public class PostRequestTask extends AsyncTask<String, String, String> {
 		try {
 			
 			User user = ParseHelper.UserParser(result);
+			Utilities.savePreferences(context, "userId", String.valueOf(user.getUserId()));
 			UpdateTask updateTask=new UpdateTask(user,context);
 			updateTask.execute(UpdateMapper.INSERT_USER);
 			
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-		// Do anything with response..
+		
 	}
 
 	void ShowToast(String message) {
