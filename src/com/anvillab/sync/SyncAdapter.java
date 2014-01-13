@@ -79,13 +79,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             String authority,
             ContentProviderClient provider,
             SyncResult syncResult) {
-    
-         
+    	
+    	       
          String requestDate = wrapper.getMaxDateFromDatabase();
-         SyncUtilities.getDatabaseScripts(requestDate);
+        
          try{
          
-        	 ArrayList<DBLog> logs = SyncUtilities.getDatabaseScripts(requestDate);
+        	 ArrayList<DBLog> logs = SyncUtilities.getDatabaseScripts("1993-10-17");
 	         if(logs.size()>0)
 	         {
 	        	 dbHelper.executeScript(logs);

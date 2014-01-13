@@ -1,11 +1,13 @@
 package com.anvillab.foodaholic;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.anvillab.asynctask.GetRequestTask;
 import com.anvillab.helper.ContentProviderWrapper;
 import com.anvillab.helper.DatabaseHelper;
+import com.anvillab.model.DBLog;
 import com.anvillab.model.MenuItem;
 import com.anvillab.model.Restaurant;
 import com.anvillab.model.Review;
@@ -41,17 +43,14 @@ public class MainActivity extends Activity  {
 	}
 	
 	public void sendMessage(View view) {
-		createRestaurants();
-		createMenus();
-		
+		 SyncUtilities.setAccountAndSync(getApplicationContext(), "Dummy");
 	}
 	
 	//CREATE ACCOUNT AND SET SYNC SETTINGS
 	public void setSync(View view)
 	{
-		Intent intent = new Intent(this, LoaderTestActivity.class);
-		startActivity(intent);
-		
+		Cursor c = wrapper.getRestaurants();
+		Toast.makeText(getApplicationContext(), String.valueOf(c.getCount()), 50).show();
 	}
 	
 	public void insertRating()
