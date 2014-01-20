@@ -26,7 +26,9 @@ public class DataProvider extends ContentProvider {
 	public static final String USER_TABLE = "Users";
 	public static final String RATE_RESTAURANT_TABLE = "rateRestaurant";
 	public static final String RATE_MENU_TABLE = "rateMenu";
-	public static final String TAG_TABLE="tagQuery";
+	public static final String TAG_MENU_TABLE="menuTagQuery";
+	public static final String TAG_LOCATION_TABLE="menuTagQuery";
+	public static final String TAG_RESTAURANT_TABLE="locationTagQuery";
 	
 	private DatabaseHelper db;
 	
@@ -40,9 +42,9 @@ public class DataProvider extends ContentProvider {
 	    uriMatcher.addURI(AUTHORITY, USER_TABLE, USERS);
 	    uriMatcher.addURI(AUTHORITY, RATE_RESTAURANT_TABLE, RATE_RESTAURANT);
 	    uriMatcher.addURI(AUTHORITY, RATE_MENU_TABLE, RATE_MENU);
-	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, MENU_TAG_QUERY);
-	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, LOCATION_TAG_QUERY);
-	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, RESTAURANT_TAG_QUERY);
+	    uriMatcher.addURI(AUTHORITY, TAG_MENU_TABLE, MENU_TAG_QUERY);
+	    uriMatcher.addURI(AUTHORITY, TAG_LOCATION_TABLE, LOCATION_TAG_QUERY);
+	    uriMatcher.addURI(AUTHORITY, TAG_RESTAURANT_TABLE, RESTAURANT_TAG_QUERY);
 	}
 	
 	@Override

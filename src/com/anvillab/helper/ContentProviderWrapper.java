@@ -26,11 +26,7 @@ public class ContentProviderWrapper {
 		Provider=context.getContentResolver();
 	}
 	
-	public Cursor getData()
-	{
-		CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.TAG_TABLE);
-		return Provider.query(CONTENT_URI, null, null, null, null);
-	}
+	
 	
 	public long createUser(User user)
 	{

@@ -233,4 +233,11 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
+	public CursorLoader getMenuTags()
+	{
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.TAG_MENU_TABLE);
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,null,null,null);
+		return loader;
+	}
+	
 }
