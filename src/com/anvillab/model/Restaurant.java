@@ -1,6 +1,9 @@
 package com.anvillab.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -29,6 +32,9 @@ public class Restaurant {
 	public String LocationTag;
 	public long TotalVote;
 	public float PersonalRating;
+	public boolean IsOpen;
+	public String OpeningTime;
+	public String ClosingTime;
 	
 	
 	
@@ -217,6 +223,31 @@ public class Restaurant {
 		HasParking = hasParking;
 	}
 	
+	public String getOpeningTime() {
+		return OpeningTime;
+	}
+
+	public String getClosingTime() {
+		return ClosingTime;
+	}
+
+	public void setOpeningTime(String openingTime) {
+		OpeningTime = openingTime;
+	}
+
+	public void setClosingTime(String closingTime) {
+		ClosingTime = closingTime;
+	}
+	
+	public void setIsOpen(boolean isOpen) {
+		IsOpen = isOpen;
+	}
+
+	public boolean isIsOpen() {
+		return IsOpen;
+	}
+	
+	
 	//PREPARES A RESTAURANT FOR PUSH TO LOCAL DB
 	public static ContentValues getVal(Restaurant restaurant)
 	{
@@ -259,6 +290,32 @@ public class Restaurant {
 		
 		return restaurant;
 		
+	}
+	
+	public static Restaurant checkRestaurantState(Restaurant restaurant) {
+
+		Date openTime = null, CloseTime = null, CurrentTime = null;
+		SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
+		try {
+			openTime = df.parse(restaurant.OpeningTime);
+			CloseTime = df.parse(restaurant.ClosingTime);
+		} catch (Exception e) {
+		}
+		Calendar c = Calendar.getInstance();
+		String formattedDate = df.format(c.getTime());
+		try {
+			CurrentTime = df.parse(formattedDate);
+		} catch (Exception e) {
+		}
+		
+		if (CurrentTime.after(openTime) && CurrentTime.before(CloseTime)) {
+			restaurant.IsOpen = true;
+		}
+		else 
+			restaurant.IsOpen = false;
+		
+		return restaurant;
+
 	}
 	
 	//RETURNS RESTAURANT LIST FOR UI

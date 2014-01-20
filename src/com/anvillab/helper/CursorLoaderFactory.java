@@ -224,4 +224,13 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
+	public CursorLoader getAllBranchRestaurants(String restaurantName)
+	{
+		String selectionClause= DatabaseHelper.KEY_NAME + " = ?";
+		String selectionArgs[]=new String[] { restaurantName };
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
+		return loader;
+	}
+	
 }

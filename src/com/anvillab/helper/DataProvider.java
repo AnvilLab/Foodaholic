@@ -16,7 +16,10 @@ public class DataProvider extends ContentProvider {
 	private static final int USERS = 5;
 	private static final int RATE_RESTAURANT = 7;
 	private static final int RATE_MENU = 9;
-	private static final int TAG_QUERY=10;
+	private static final int MENU_TAG_QUERY=10;
+	private static final int LOCATION_TAG_QUERY=11;
+	private static final int RESTAURANT_TAG_QUERY=12;
+	
 	
 	public static final String RESTAURANT_TABLE = "Restaurants";
 	public static final String MENU_TABLE = "Menus";
@@ -37,7 +40,9 @@ public class DataProvider extends ContentProvider {
 	    uriMatcher.addURI(AUTHORITY, USER_TABLE, USERS);
 	    uriMatcher.addURI(AUTHORITY, RATE_RESTAURANT_TABLE, RATE_RESTAURANT);
 	    uriMatcher.addURI(AUTHORITY, RATE_MENU_TABLE, RATE_MENU);
-	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, TAG_QUERY);
+	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, MENU_TAG_QUERY);
+	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, LOCATION_TAG_QUERY);
+	    uriMatcher.addURI(AUTHORITY, TAG_TABLE, RESTAURANT_TAG_QUERY);
 	}
 	
 	@Override
@@ -70,8 +75,14 @@ public class DataProvider extends ContentProvider {
 	        	queryBuilder.setTables(DatabaseHelper.TABLE_USER);
 	            break;
 	            
-	        case TAG_QUERY:
-	        	return tag(database);  
+	        case MENU_TAG_QUERY:
+	        	return menuTag(database);
+	       
+	        case LOCATION_TAG_QUERY:
+	        	return locationTag(database);
+	        
+	        case RESTAURANT_TAG_QUERY:
+	        	return restaurantNameAndTypeTag(database);
             
 		}
 		
@@ -83,9 +94,23 @@ public class DataProvider extends ContentProvider {
 	}
 
 
-	public Cursor tag(SQLiteDatabase database)
-	{
-		return database.rawQuery("select name as \"N\",\"menu\" as \"m\" from Menu Union select category as\"N\",\"menu\" as \"m\" from Menu Union select subCategory as\"N\",\"menu\" as \"m\" from Menu Union select package as\"N\",\"menu\" as \"m\" from Menu Union select name as \"N\", \"rest\" as \"m\" from Restaurant ",null);
+	public Cursor menuTag(SQLiteDatabase database) {
+		return database
+				.rawQuery(
+						"select name as \"Tag\" from Menu Union select category as\"Tag\" from Menu Union select subCategory as\"Tag\" from Menu Union select package as\"Tag\" from Menu",
+						null);
+	}
+
+	public Cursor locationTag(SQLiteDatabase database) {
+		return database.rawQuery("select locationTag as \"Tag\" from Restaurant",
+				null);
+	}
+
+	public Cursor restaurantNameAndTypeTag(SQLiteDatabase database) {
+		return database
+				.rawQuery(
+						"select name as \"Tag\" from Restaurant Union select primeType as\"Tag\" from Restaurant",
+						null);
 	}
 
 	@Override

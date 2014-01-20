@@ -43,7 +43,9 @@ public class MainActivity extends Activity  {
 	}
 	
 	public void sendMessage(View view) {
-		 SyncUtilities.setAccountAndSync(getApplicationContext(), "Dummy");
+		 //SyncUtilities.setAccountAndSync(getApplicationContext(), "Dummy");
+		createRestaurants();
+		createMenus();
 	}
 	
 	//CREATE ACCOUNT AND SET SYNC SETTINGS
