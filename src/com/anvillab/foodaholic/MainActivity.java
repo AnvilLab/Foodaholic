@@ -43,9 +43,12 @@ public class MainActivity extends Activity  {
 	}
 	
 	public void sendMessage(View view) {
-		 //SyncUtilities.setAccountAndSync(getApplicationContext(), "Dummy");
-		createRestaurants();
-		createMenus();
+		
+		/*createRestaurants();
+		createMenus();*/
+		
+		Intent intent = new Intent(this, LoaderTestActivity.class);
+		startActivity(intent);
 	}
 	
 	//CREATE ACCOUNT AND SET SYNC SETTINGS
@@ -79,8 +82,8 @@ public class MainActivity extends Activity  {
 		MenuItem menu;
 		for(long i=1;i<=5;i++)
 		{
-			if(i%2 == 0) menu= new MenuItem(12+i,"menu" ,"evCategory","subCat","package","tag","x",10.0,3,10,5,1);
-			else menu= new MenuItem(12+i,"menu" ,"odCategory","subCat","package","tag","x",10.0,3,10,5,1);
+			if(i%2 == 0) menu= new MenuItem(12+i,"menu" ,"evCategory","pizza","package","tag","x",10.0,3,10,5,1);
+			else menu= new MenuItem(12+i,"menu" ,"odCategory","burger","package","tag","x",10.0,3,10,5,2);
 			wrapper.createMenu(menu);
 		}
 	}

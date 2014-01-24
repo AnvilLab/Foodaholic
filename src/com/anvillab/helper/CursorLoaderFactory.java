@@ -26,7 +26,7 @@ public class CursorLoaderFactory {
 		switch (id) {
 
         case QueryMapper.GET_RESTAURANTS:
-        	loader=getRestaurants();
+        	loader=getRestaurantsByMenuAndLocation(params[0],params[1]);
             break;
 
         case QueryMapper.GET_RESTAURANTS_BY_LOCATION:
@@ -50,7 +50,7 @@ public class CursorLoaderFactory {
             break;
             
         case QueryMapper.GET_MENUS_BY_KEYWORDS:
-        	loader=getMenuByMenuKeyword(params[0]);
+        	loader=getRestaurantsByMenuKeyword(params[0]);
             break;
             
         case QueryMapper.GET_MENUS_BY_RESTAURANT:
@@ -77,12 +77,28 @@ public class CursorLoaderFactory {
 		
 		return loader;
 	}
+	
+	//FOOD LOCATION COMPOSITE
+	public CursorLoader getRestaurantsByMenuAndLocation(String locationKeyword,String menuKeyword)
+	{
 		
+		locationKeyword = "%" + locationKeyword + "%";
+		menuKeyword = "%" + menuKeyword + "%";
+		
+		String selectionClause= DatabaseHelper.KEY_ADDRESS + "	LIKE ? AND " + DatabaseHelper.KEY_ID + " IN (SELECT Menu.restaurantId FROM Menu WHERE " + DatabaseHelper.KEY_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_SUB_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_NAME + " LIKE ? OR " + DatabaseHelper.KEY_PACKAGE + " LIKE ?)";
+		String selectionArgs[]=new String[] { locationKeyword, menuKeyword, menuKeyword, menuKeyword, menuKeyword };
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
+	
+		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,selectionClause,selectionArgs,null);
+		return loader;
+	}
+		
+	//ONLY LOCATION
 	public CursorLoader getRestaurantsByLocation(String location)
 	{
 		location = "%" + location + "%";
 		
-		String selectionClause=DatabaseHelper.KEY_LOCATION_TAG + " LIKE ?";
+		String selectionClause=DatabaseHelper.KEY_ADDRESS + " LIKE ?";
 		String selectionArgs[]=new String[] { location };
 		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
 	
@@ -90,12 +106,13 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
+	//LOCATION RESTAURANT TYPE COMPOSITE
 	public CursorLoader getRestaurantsByLocationAndType(String location,String type)
 	{
 		location = "%" + location + "%";
 		type = "%" + type + "%";
 		
-		String selectionClause=DatabaseHelper.KEY_LOCATION_TAG + " LIKE ? AND " + DatabaseHelper.KEY_PRIME_TYPE + " LIKE ?";
+		String selectionClause=DatabaseHelper.KEY_ADDRESS + " LIKE ? AND " + DatabaseHelper.KEY_PRIME_TYPE + " LIKE ?";
 		String selectionArgs[]=new String[] { location,type };
 		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
 	
@@ -108,7 +125,7 @@ public class CursorLoaderFactory {
 		location = "%" + location + "%";
 		name = "%" + name + "%";
 		
-		String selectionClause=DatabaseHelper.KEY_LOCATION_TAG + " LIKE ? AND " + DatabaseHelper.KEY_NAME + " LIKE ?";
+		String selectionClause=DatabaseHelper.KEY_ADDRESS + " LIKE ? AND " + DatabaseHelper.KEY_NAME + " LIKE ?";
 		String selectionArgs[]=new String[] { location,name };
 		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
 	
@@ -116,6 +133,7 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
+	//ONLY BY TYPE
 	public CursorLoader getRestaurantsByType(String type)
 	{
 		type = "%" + type + "%";
@@ -128,6 +146,8 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
+	
+	//ONLY BY NAME
 	public CursorLoader getRestaurantsByName(String name)
 	{
 		name = "%" + name + "%";
@@ -157,13 +177,14 @@ public class CursorLoaderFactory {
 		return loader;
 	}
 	
-	public CursorLoader getMenuByMenuKeyword(String keyword)
+	//ONLY BY FOOD
+	public CursorLoader getRestaurantsByMenuKeyword(String keyword)
 	{
 		keyword = "%" + keyword + "%";
 		
-		String selectionClause=DatabaseHelper.KEY_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_SUB_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_NAME + " LIKE ? OR " + DatabaseHelper.KEY_PACKAGE + " LIKE ?";
+		String selectionClause= DatabaseHelper.KEY_ID + " IN (SELECT Menu.restaurantId FROM Menu WHERE " + DatabaseHelper.KEY_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_SUB_CATEGORY + " LIKE ? OR " + DatabaseHelper.KEY_NAME + " LIKE ? OR " + DatabaseHelper.KEY_PACKAGE + " LIKE ?)";
 		String selectionArgs[]=new String[] { keyword,keyword,keyword,keyword };
-		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.MENU_TABLE);
+		ContentProviderWrapper.CONTENT_URI = Uri.parse("content://" + DataProvider.AUTHORITY+ "/" + DataProvider.RESTAURANT_TABLE);
 	
 		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,null,selectionClause,selectionArgs,DatabaseHelper.KEY_RATING + " ASC");
 		return loader;
@@ -212,6 +233,8 @@ public class CursorLoaderFactory {
 		loader = new CursorLoader(context,ContentProviderWrapper.CONTENT_URI,projection,selectionClause,selectionArgs,null);
 		return loader;
 	}
+	
+	
 	
 	public CursorLoader getRestaurantRatingsByUser(String userId)
 	{

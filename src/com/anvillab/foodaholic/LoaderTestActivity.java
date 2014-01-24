@@ -13,14 +13,14 @@ import android.widget.Toast;
 public class LoaderTestActivity extends FragmentActivity  implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	CursorLoaderFactory loaderFactory;
-	String[] params = {"1"};
+	String[] params = {"Dhaka","Category"};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loader_test);
 		loaderFactory = new CursorLoaderFactory(this);
-		initializeLoader(9,params);
+		initializeLoader(1,params);
 	}
 
 	@Override
